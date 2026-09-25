@@ -433,10 +433,7 @@ export function ChatFab() {
           className="fixed bottom-24 right-4 z-50 flex max-h-[min(600px,calc(100svh-8rem))] w-[min(380px,calc(100vw-2rem))] origin-bottom-right flex-col overflow-hidden rounded-2xl bg-white text-ink shadow-[0_24px_60px_-16px_rgb(15_31_23/0.45)] ring-1 ring-forest/5 transition-[opacity,transform] duration-200 ease-(--ease-out) starting:scale-95 starting:opacity-0"
         >
           <div className="flex items-center justify-between bg-forest px-5 py-4 text-white">
-            <div>
-              <p className="font-display text-lg font-bold leading-none">Bates Landscaping</p>
-              <p className="mt-1.5 text-[13px] text-white/65">Ask us about your property</p>
-            </div>
+            <p className="font-display text-lg font-bold leading-none">Bates Landscaping</p>
             <button onClick={() => setOpen(false)} aria-label="Close chat" className="press grid size-10 place-items-center rounded-full hover:bg-white/10">
               <Close className="size-5" />
             </button>

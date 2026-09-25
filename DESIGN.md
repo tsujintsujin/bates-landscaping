@@ -108,8 +108,8 @@ homepage as of 2026-09-25. Other pages must reuse it.
 | Footer links | 20px mobile, `clamp(1.5rem, 2.4vw, 2rem)` desktop | Footer |
 | Body | 15px, leading-relaxed, max ~65ch | Everywhere |
 
-**OPEN:** Justin said "everything is too big" twice. A global shrink (hero ~60px, section heads 36-44px, section padding
-80-96px, footer links ~26px) was proposed and **not answered**. Ask before building new pages at the current scale.
+Scale: Justin twice said early versions were "too big"; after the redo he confirmed the current scale is **fine**. Build
+new pages at this scale, and when unsure pick the smaller option.
 
 ## Layout
 
@@ -120,8 +120,9 @@ homepage as of 2026-09-25. Other pages must reuse it.
   centre on desktop (`md:pb-48` vs `md:pt-24`), because the split cards overlap the hero's bottom edge by 112px.
 - Header: 72px tall, three-column grid `1fr auto 1fr` from `lg` so the nav is on the page's true centre.
 - Section rhythm: `py-24` mobile, `md:py-28`/`md:pt-32`; hiring strip is shorter (`py-12`/`md:py-14`).
-- The floating CTA card straddles the seam between page and footer: its section background is split paper/forest at
-  `calc(50% + half the top padding)`.
+- The floating CTA card straddles the seam between page and footer on desktop (section background split white/forest
+  at `calc(50% + 2rem)`); on phones its section is solid forest. The section overlaps the footer by 1px (`-mb-px`) so no
+  hairline shows at fractional screen scaling.
 
 ## Elevation & Depth
 
@@ -153,11 +154,8 @@ All live in `site/components/client.tsx` (client) and `site/app/page.tsx` (marku
 ### Buttons
 - **Primary:** red pill, white 15px semibold text, 12px 20px padding, **no arrow**. Label "Book now" everywhere booking is meant.
 - **Dark:** forest pill, turns red on hover ("View all projects →", "All case studies →" keep an arrow).
-- **Award ribbons** (hero): notched ribbon SVGs, 2024 `#1c5a3a` and 2025 `#2f8a45` (NALP's greens, used only here),
-  white text (NALP / year in Bricolage / AWARDS OF EXCELLENCE / RECIPIENT), faint inner border, soft drop shadow;
-  106px tall on phones, 130px desktop.
 - **Text link with arrow:** no background, semibold, arrow nudges 2px right on hover. Used as the second action next
-  to a button ("See our work →" in the hero, "Book now →" in the floating card). Rule from Justin: **one button + one
+  to a button ("See our work →" in the hero, "Ask us →" in the floating card). Rule from Justin: **one button + one
   text link**, never two buttons side by side.
 - **Pill with arrow circle** ("See Careers"): one red pill, text then a white 36px circle with the arrow inside its
   right end (padding 6px on the right, 20px on the left); hover darkens the pill and nudges the arrow.
@@ -180,7 +178,9 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
 - Desktop: logo left, nav centred (Services ▾ / Portfolio ▾ / About Us / Careers ▾), phone number + red "Book now" right.
   Dropdowns open on hover and focus-within.
 - Mobile: logo, round phone button, round menu button. Menu = full-screen forest panel, Commercial/Residential as
-  `<details>` accordions, page scroll locked, Esc closes.
+  `<details>` accordions, page scroll locked, Esc closes. While it's open the header bar is forest too and the floating
+  chat + consent buttons are hidden (`html[data-menu="open"] .menu-hide { display:none }`), so the page never shows
+  through.
 
 ### Signature Components
 - **Word-fill headline** (`WordFill`): words go from 18% to full opacity, scrubbed to scroll (GSAP ScrollTrigger,
@@ -191,8 +191,11 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
   `pos`, keyed by absolute index so they animate `transform` between positions (700ms custom ease-in-out). Loops both
   ways forever. Active slide is inset top and bottom with `clip-path` so the neighbours look taller (Hooper's look).
   Round red arrows over the neighbours; swipe on touch (a flick > 0.11 px/ms or a 50px drag); arrow keys when focused.
+- **Award ribbons** (hero, `AwardRibbon` in page.tsx): two notched ribbon SVGs above the headline, 2024 `#1c5a3a` and
+  2025 `#2f8a45` (NALP's greens, used only here), white text (NALP / year in Bricolage / AWARDS OF / EXCELLENCE /
+  RECIPIENT), faint inner border, soft drop shadow; 106px tall on phones, 130px desktop. No NALP logo mark.
 - **Floating CTA card** ("We're here to help!"): red gradient card with contour line art, 12px vertical bob (3.2s,
-  CSS), straddles page/footer. "Ask us" opens the chat.
+  CSS). White "Book now" button + "Ask us →" text link that opens the chat.
 - **Service panels** (`.svc-row` / `.svc` in globals.css, pure CSS): five full-height photo panels in a row from `lg`;
   the hovered or focused panel grows to `flex-grow: 3.4` (600ms ease-in-out), the first one is open by default. The
   open panel's description reveals with a `grid-template-rows: 0fr → 1fr` transition; collapsed titles are 1rem and
@@ -214,11 +217,11 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
   paper ring) at each year, so the sequence is obvious without reading.
 - **Chat FAB**: red round button bottom-right. After 3s a "1" badge plus a speech bubble "Hey there, how can we help
   you?"; the bubble hides after 8s, the badge stays until opened (both remembered for the visit in sessionStorage).
-  Never auto-opens. Panel shows quick-reply chips (Drainage, Bamboo, Patio / garden, Maintenance, Snow, Something
+  Never auto-opens. Panel header is just "Bates Landscaping" + close (no subtitle). Panel shows quick-reply chips (Drainage, Bamboo, Patio / garden, Maintenance, Snow, Something
   else); each answer (canned text from their FAQs, `CHIPS` in `lib/content.ts`) carries "Book now →" to
   `/book-now?service=<key>`. Any element can open it with `dispatchEvent(new Event("bates:open-chat"))`.
 - **Hero video**: muted, looped, poster first; plays only when reduced motion is off and data saver is off.
-- **Hero entrance**: `.rise` (18px up, 6px blur, 900ms ease-out), staggered 0 / 120 / 220ms.
+- **Hero entrance**: `.rise` (18px up, 6px blur, 900ms ease-out): ribbons 0ms, headline 60ms, line 120ms, actions 220ms.
 
 ## Do's and Don'ts
 
@@ -226,7 +229,10 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
 - Reuse the tokens, radii and button rules above on every new page.
 - Use Bates's real copy, photos and facts from `recon/`.
 - Keep motion native-scroll friendly and respect `prefers-reduced-motion`.
-- Check every page at 1440 (or 1920) and 390 wide before calling it done.
+- Check every page at 1440 (or 1920), 390 and 320 wide before calling it done (Justin checks small phones and
+  browser scaling).
+- On phones, centre what is centred in the hero, and prefer a clear sequence (e.g. the vertical timeline) over layouts
+  that only read correctly with effort.
 
 ### Don't:
 - No smooth-scroll libraries (Lenis etc.), no scroll-jacking, no pinned sections that trap the scroll. Justin finds them laggy.
@@ -235,4 +241,5 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
 - No second accent colour, no gradients on text, no glass-for-decoration.
 - No two buttons side by side: one button plus one text link.
 - No invented testimonials, hours, stats, awards or prices.
-- No hand-drawn icons; Phosphor only.
+- No hand-drawn icons; Phosphor only. No hand-drawn "doodle" decorations either (tried on the history row; Justin
+  rejected them).
