@@ -244,3 +244,11 @@ Justin's mapping of Hooper sections → Bates:
   Cloudflare because the justin94.space router proxies to vercel.app apps; the chatbot can still use Workers AI via API.
 - "What I found" sheet: `deliverables/Bates-site-notes.pdf`. Dropped two earlier claims after checking live: the login
   form is hidden (not exposed), and the site is not slow (1.7s LCP desktop).
+
+## 2026-09-25: final homepage edits from Justin
+- Team details should use the **full width** of the section (was capped at ~672px, leaving ~1/4 empty on the right).
+- Team details **outro = fade out** (was sliding back into the circle).
+- "See Careers": make it **one red pill** with the **white arrow circle inside it at the right end** (was a pill + a
+  separate white circle).
+- Also fixed: the opened head could sit off the grid's left edge if the window resized while open (DevTools opening);
+  the slide target is now re-measured on resize.
