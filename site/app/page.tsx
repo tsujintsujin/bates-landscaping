@@ -4,6 +4,7 @@ import {
   CaseCarousel,
   ChatFab,
   ConsentPreferences,
+  DemoNotice,
   GalleryMarquee,
   Header,
   HeroVideo,
@@ -462,6 +463,7 @@ export default function Home() {
 
       <ChatFab />
       <ConsentPreferences />
+      <DemoNotice />
     </>
   );
 }

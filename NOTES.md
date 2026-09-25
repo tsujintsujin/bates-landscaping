@@ -299,3 +299,13 @@ Justin's mapping of Hooper sections → Bates:
   **"Unavailable in demo"** popup instead.
 - Recorded in HANDOFF §8.0 with the list of pages to build (the ones the homepage body and footer link to). Not
   implemented in this session; he continues in a new session.
+
+## 2026-09-25: final scope (Justin)
+- **No subpages and no further handoff.** The demo is the homepage. "Tie up loose ends; make sure no link goes to a 404."
+- Every link to another page on the site shows a short notice instead of navigating: "This page isn't part of the demo."
+  (booking links: "Booking isn't available in this demo."). Homepage, #anchors, phone, email and off-site links work.
+- Any other address under /bates (typed in, opened in a new tab, old links) shows a "This page isn't part of the demo"
+  page with "Back to the homepage", instead of a 404.
+- Checked: 69 links on the page (desktop, mobile menu, chat); 58 internal clicked, none navigated, all showed the right
+  notice; all 24 linked addresses + made-up deeper paths return 200; external links (Facebook, Instagram, LinkedIn,
+  LMN portal, Trainual) load.

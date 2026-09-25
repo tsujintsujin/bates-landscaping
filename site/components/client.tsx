@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { asset } from "@/lib/base";
+import { asset, BASE } from "@/lib/base";
 import { CASES, CHIPS, GALLERY, NAV, PHONE, PHONE_HREF, TEAM } from "@/lib/content";
 import { Arrow, ArrowLeft, Chat, Chevron, Close, Cookie, Menu, Phone } from "./icons";
 
@@ -761,5 +761,54 @@ export function ConsentPreferences() {
         </div>
       </dialog>
     </>
+  );
+}
+
+/* ---------- Demo notice: this remodel is the homepage only ---------- */
+// Any link to another page of the site (header menus, footer, section links, "Book now") shows a short notice instead
+// of navigating. The homepage, #anchors, phone, email and off-site links behave normally. Captured before next/link, which
+// skips navigation when the click was already cancelled. A catch-all route covers anything opened another way.
+
+export function DemoNotice() {
+  const [text, setText] = useState("");
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    const home = new Set([BASE, BASE + "/"]);
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement | null)?.closest?.("a");
+      if (!a) return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin || !url.pathname.startsWith(BASE) || home.has(url.pathname)) return;
+      e.preventDefault();
+      setText(
+        /\/(book-now|request-a-quote)/.test(url.pathname)
+          ? "Booking isn't available in this demo."
+          : "This page isn't part of the demo.",
+      );
+      setShow(true);
+      clearTimeout(t);
+      t = setTimeout(() => setShow(false), 2800);
+    };
+    document.addEventListener("click", onClick, true);
+    document.addEventListener("auxclick", onClick, true);
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener("click", onClick, true);
+      document.removeEventListener("auxclick", onClick, true);
+    };
+  }, []);
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={`pointer-events-none fixed inset-x-4 top-22 z-[60] mx-auto w-fit rounded-full bg-forest px-5 py-3 text-center text-sm font-medium text-white shadow-[0_16px_40px_-12px_rgb(15_31_23/0.55)] ring-1 ring-white/10 transition-[opacity,translate] duration-200 ease-(--ease-out) motion-reduce:transition-none ${
+        show ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
+      }`}
+    >
+      {text}
+    </div>
   );
 }
