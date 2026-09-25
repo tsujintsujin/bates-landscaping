@@ -1,0 +1,9 @@
+# Thin Workers AI proxy for the Bates demo's chat. The site's server route (site/app/api/chat/route.ts) calls it with a
+# shared key; browsers never call it directly.
+name = "bates-chat"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[ai]
+binding = "AI"

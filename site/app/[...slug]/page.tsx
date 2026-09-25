@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DemoNotice, Header } from "@/components/client";
+import { BookingDialog, DemoNotice, Header } from "@/components/client";
 
 // This remodel is the homepage only. Any other address under /bates lands here instead of a 404.
 export const metadata: Metadata = { title: "Not part of the demo | Bates Landscaping" };
@@ -26,6 +26,7 @@ export default function DemoOnly() {
         </div>
       </main>
       <DemoNotice />
+      <BookingDialog />
     </>
   );
 }
