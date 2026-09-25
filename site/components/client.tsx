@@ -2,14 +2,29 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { CASES, CHIPS, GALLERY, NAV, PHONE, PHONE_HREF } from "@/lib/content";
-import { Arrow, ArrowLeft, Chat, Chevron, Close, Menu, Phone } from "./icons";
+import { asset } from "@/lib/base";
+import { CASES, CHIPS, GALLERY, NAV, PHONE, PHONE_HREF, TEAM } from "@/lib/content";
+import { Arrow, ArrowLeft, Chat, Chevron, Close, Cookie, Menu, Phone } from "./icons";
 
 const OPEN_CHAT = "bates:open-chat";
 const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Links: internal via next/link (adds the /bates base path), off-site in a new tab ---------- */
+
+export function SmartLink({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
+  return href.startsWith("http") ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+      {children}
+    </a>
+  ) : (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
 
 /* ---------- Header: transparent over the hero, solid once the hero's top leaves ---------- */
 
@@ -51,11 +66,12 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
       <div className="mx-auto grid h-18 max-w-[1440px] grid-cols-[1fr_auto] items-center gap-4 px-4 md:px-8 lg:grid-cols-[1fr_auto_1fr]">
         <Link href="/" aria-label="Bates Landscaping home" className="w-fit">
           <Image
-            src="/img/logo.webp"
+            src={asset("/img/logo.svg")}
             alt="Bates Landscaping"
             width={250}
             height={66}
             priority
+            unoptimized
             className={`h-9 w-auto transition-[filter] duration-300 md:h-10 ${light ? "" : "brightness-0 invert"}`}
           />
         </Link>
@@ -71,7 +87,7 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
                   <div key={group}>
                     <p className="px-3 pb-1 pt-2 font-display text-sm font-bold text-red">{group}</p>
                     {items.map(([label, href]) => (
-                      <a key={label} href={href} className={item}>{label}</a>
+                      <SmartLink key={label} href={href} className={item}>{label}</SmartLink>
                     ))}
                   </div>
                 ))}
@@ -85,12 +101,12 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
             <div className={menu}>
               <div className={`${panel} w-52`}>
                 {NAV.portfolio.map(([label, href]) => (
-                  <a key={label} href={href} className={item}>{label}</a>
+                  <SmartLink key={label} href={href} className={item}>{label}</SmartLink>
                 ))}
               </div>
             </div>
           </div>
-          <a href="/about-us" className={link}>About Us</a>
+          <Link href="/about-us" className={link}>About Us</Link>
           <div className="group relative">
             <button className={link} aria-haspopup="true">
               Careers <Chevron className="size-3.5" weight="bold" />
@@ -98,7 +114,7 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
             <div className={menu}>
               <div className={`${panel} w-52`}>
                 {NAV.careers.map(([label, href]) => (
-                  <a key={label} href={href} className={item}>{label}</a>
+                  <SmartLink key={label} href={href} className={item}>{label}</SmartLink>
                 ))}
               </div>
             </div>
@@ -123,12 +139,12 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
           >
             <Phone className="size-5" weight="bold" />
           </a>
-          <a
+          <Link
             href="/book-now"
             className="press hidden rounded-full bg-red px-5 py-2.5 text-[15px] font-semibold text-white hover:bg-red-deep sm:inline-flex"
           >
             Book now
-          </a>
+          </Link>
           <button
             onClick={() => setOpen(!open)}
             aria-expanded={open}
@@ -153,19 +169,19 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
                 </summary>
                 <div className="pb-3" onClick={() => setOpen(false)}>
                   {items.map(([label, href]) => (
-                    <a key={label} href={href} className="block py-2 text-lg text-white/75">{label}</a>
+                    <SmartLink key={label} href={href} className="block py-2 text-lg text-white/75">{label}</SmartLink>
                   ))}
                 </div>
               </details>
             ))}
             {[...NAV.portfolio, ["About Us", "/about-us"], ...NAV.careers].map(([label, href]) => (
-              <a key={label} href={href} className="border-b border-white/10 py-4 font-display text-2xl font-bold">
+              <SmartLink key={label} href={href} className="border-b border-white/10 py-4 font-display text-2xl font-bold">
                 {label}
-              </a>
+              </SmartLink>
             ))}
-            <a href="/book-now" className="press mt-8 rounded-full bg-red py-4 text-center text-lg font-semibold">
+            <Link href="/book-now" className="press mt-8 rounded-full bg-red py-4 text-center text-lg font-semibold">
               Book now
-            </a>
+            </Link>
           </nav>
         </div>
       )}
@@ -189,11 +205,11 @@ export function HeroVideo() {
       loop
       playsInline
       preload="none"
-      poster="/media/hero-poster.webp"
+      poster={asset("/media/hero-poster.webp")}
       aria-hidden
     >
-      <source src="/media/hero.webm" type="video/webm" />
-      <source src="/media/hero.mp4" type="video/mp4" />
+      <source src={asset("/media/hero.webm")} type="video/webm" />
+      <source src={asset("/media/hero.mp4")} type="video/mp4" />
     </video>
   );
 }
@@ -245,7 +261,7 @@ export function GalleryMarquee() {
         marginTop: `min(${g.y}px, ${(g.y / 4.8).toFixed(1)}vw)`,
       }}
     >
-      <Image src={g.src} alt={copy ? "" : g.caption} fill sizes="(min-width: 768px) 340px, 62vw" className="object-cover" />
+      <Image src={asset(g.src)} alt={copy ? "" : g.caption} fill sizes="(min-width: 768px) 340px, 62vw" className="object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-forest/80 via-forest/10 to-transparent" />
       <figcaption className="absolute inset-x-3 bottom-3 border-t border-white/25 pt-2.5 text-[11px] font-semibold uppercase leading-tight tracking-[0.08em] text-white md:inset-x-4 md:bottom-4">
         {g.caption}
@@ -310,7 +326,7 @@ export function CaseCarousel() {
               clipPath: on ? "inset(var(--inset) 0 round 6px)" : "inset(0 round 6px)",
             }}
           >
-            <Image src={c.img} alt="" fill sizes="(min-width: 1300px) 1040px, 80vw" className="object-cover" draggable={false} />
+            <Image src={asset(c.img)} alt="" fill sizes="(min-width: 1300px) 1040px, 80vw" className="object-cover" draggable={false} />
             <div
               className={`absolute inset-0 bg-gradient-to-t from-forest/90 via-forest/20 to-forest/10 transition-opacity duration-500 ${on ? "" : "opacity-40"}`}
             />
@@ -428,9 +444,9 @@ export function ChatFab() {
                 >
                   {m.text}
                   {m.service && (
-                    <a href={`/book-now?service=${m.service}`} className="mt-3 flex items-center gap-1.5 font-semibold text-red">
+                    <Link href={`/book-now?service=${m.service}`} className="mt-3 flex items-center gap-1.5 font-semibold text-red">
                       Book now <Arrow className="size-4" weight="bold" />
-                    </a>
+                    </Link>
                   )}
                 </div>
               </div>
@@ -477,33 +493,244 @@ export function ChatFab() {
   );
 }
 
-/* ---------- Links to pages this demo doesn't have yet ---------- */
+/* ---------- The team: circles; click = others fade, head slides left, details slide out of the circle ---------- */
+// Sequence (open):  others fade 0-250ms → head slides to the left edge 200-750ms → details slide out 700-1200ms.
+// Sequence (close): details slide back into the circle 0-300ms → head slides home 250-800ms → others fade in 750ms+.
+// Clicking anywhere on the details (or Esc, or the close button) runs the close sequence.
 
-export function SoonToast() {
-  const [show, setShow] = useState(false);
+export function TeamSection() {
+  const [sel, setSel] = useState<number | null>(null); // last person opened (kept during the close sequence)
+  const [open, setOpen] = useState(false);
+  const [shift, setShift] = useState({ x: 0, y: 0 });
+  const [gridH, setGridH] = useState<number>();
+  const [panelH, setPanelH] = useState(0);
+  const grid = useRef<HTMLUListElement>(null);
+  const circles = useRef<(HTMLSpanElement | null)[]>([]);
+  const heads = useRef<(HTMLButtonElement | null)[]>([]);
+  const panel = useRef<HTMLDivElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+
+  // Keep the stage as tall as the grid (and the open panel) so the page doesn't jump.
   useEffect(() => {
-    let t: ReturnType<typeof setTimeout>;
-    const onClick = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement).closest("a");
-      const href = a?.getAttribute("href");
-      if (!href || !href.startsWith("/") || href === "/") return;
-      e.preventDefault();
-      setShow(true);
-      clearTimeout(t);
-      t = setTimeout(() => setShow(false), 2600);
-    };
-    document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
+    const ro = new ResizeObserver(() => setGridH(grid.current!.offsetHeight));
+    ro.observe(grid.current!);
+    return () => ro.disconnect();
   }, []);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    if (sel !== null) setTimeout(() => heads.current[sel]?.focus({ preventScroll: true }), 800);
+  }, [sel]);
+
+  useEffect(() => {
+    if (!open) return;
+    setPanelH(panel.current!.scrollHeight);
+    const t = setTimeout(() => closeBtn.current?.focus({ preventScroll: true }), 700);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    addEventListener("keydown", onKey);
+    return () => { clearTimeout(t); removeEventListener("keydown", onKey); };
+  }, [open, close]);
+
+  function pick(i: number) {
+    const c = circles.current[i]!.getBoundingClientRect();
+    const g = grid.current!.getBoundingClientRect();
+    setShift({ x: g.left - c.left, y: g.top - c.top });
+    setSel(i);
+    setOpen(true);
+  }
+
+  const p = sel === null ? null : TEAM[sel];
   return (
     <div
-      role="status"
-      aria-live="polite"
-      className={`fixed left-1/2 top-22 z-[60] -translate-x-1/2 rounded-full bg-forest px-5 py-3 text-sm font-medium text-white shadow-xl transition-[opacity,transform] duration-200 ease-(--ease-out) ${
-        show ? "opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
-      }`}
+      className="relative transition-[height] duration-500 ease-(--ease-in-out) [--head:96px] md:[--head:148px]"
+      style={{ height: gridH === undefined ? undefined : open ? Math.max(gridH, panelH) : gridH }}
     >
-      {show && "That page isn't part of this demo yet."}
+      <ul ref={grid} className="grid grid-cols-3 gap-x-3 gap-y-7 sm:grid-cols-5 md:gap-x-6 md:gap-y-10">
+        {TEAM.map((m, i) => {
+          const me = open && sel === i;
+          const others = open && sel !== i;
+          return (
+            <li
+              key={m.name}
+              className={`flex justify-center transition-opacity duration-300 motion-reduce:transition-none ${
+                others ? "pointer-events-none opacity-0 delay-0" : "opacity-100 delay-[750ms]"
+              }`}
+            >
+              <button
+                ref={(el) => { heads.current[i] = el; }}
+                onClick={() => (me ? close() : pick(i))}
+                aria-expanded={me}
+                aria-controls="team-details"
+                tabIndex={others ? -1 : 0}
+                className={`group relative z-10 flex flex-col items-center gap-3 transition-transform duration-[550ms] ease-(--ease-in-out) motion-reduce:transition-none ${
+                  me ? "delay-200" : "delay-300"
+                }`}
+                style={{ transform: me ? `translate(${shift.x}px, ${shift.y}px)` : undefined }}
+              >
+                <span
+                  ref={(el) => { circles.current[i] = el; }}
+                  className="relative block size-(--head) overflow-hidden rounded-full bg-forest ring-0 ring-red transition-[transform,box-shadow] duration-150 ease-(--ease-out) group-active:scale-[0.92] [@media(hover:hover)]:group-hover:ring-4"
+                >
+                  <Image src={asset(m.img)} alt="" fill sizes="148px" className="object-cover" />
+                </span>
+                <span className={`text-center transition-opacity duration-200 ${me ? "opacity-0" : ""}`}>
+                  <span className="block font-display text-base font-bold leading-tight md:text-lg">{m.name}</span>
+                  <span className="mt-0.5 block max-w-[16ch] text-[13px] leading-snug text-moss">{m.role}</span>
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Details: tucked behind the circle, slides out to the right. Click anywhere on it to close. */}
+      <div
+        ref={panel}
+        id="team-details"
+        role="region"
+        aria-label={p ? `About ${p.name}` : undefined}
+        aria-hidden={!open}
+        onClick={open ? close : undefined}
+        className={`absolute right-0 top-0 cursor-pointer pb-2 pl-4 transition-[clip-path,transform,opacity] ease-(--ease-out) motion-reduce:transition-none md:pl-8 ${
+          open
+            ? "pointer-events-auto translate-x-0 opacity-100 duration-500 delay-700 [clip-path:inset(0_0_0_0)]"
+            : "pointer-events-none -translate-x-[calc(var(--head)/2)] opacity-0 duration-300 delay-0 [clip-path:inset(0_100%_0_0)]"
+        }`}
+        style={{ left: "var(--head)" }}
+      >
+        {p && (
+          <div className="max-w-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-display text-2xl font-bold leading-tight tracking-[-0.02em] md:text-3xl">{p.name}</h3>
+                <p className="mt-1 text-sm font-semibold text-red">{p.role}</p>
+              </div>
+              <button
+                ref={closeBtn}
+                tabIndex={open ? 0 : -1}
+                aria-label={`Close ${p.name}'s details`}
+                className="press grid size-9 shrink-0 place-items-center rounded-full bg-forest/5 text-ink hover:bg-forest/10"
+              >
+                <Close className="size-4" weight="bold" />
+              </button>
+            </div>
+            <p className="mt-4 text-[15px] leading-relaxed text-moss">{p.bio}</p>
+          </div>
+        )}
+      </div>
     </div>
+  );
+}
+
+/* ---------- Consent Preferences (their site has a CookieYes button bottom-left; this is ours) ---------- */
+// The demo sets no tracking cookies; the only storage is the chat's "seen" flag. The choice is remembered per browser.
+
+const CONSENT_KEY = "bates-consent";
+const CONSENT = [
+  ["necessary", "Necessary", "Necessary cookies are required to enable the basic features of this site, such as providing secure log-in or adjusting your consent preferences. These cookies do not store any personally identifiable data."],
+  ["functional", "Functional", "Functional cookies help perform certain functionalities like sharing the content of the website on social media platforms, collecting feedback, and other third-party features."],
+  ["analytics", "Analytics", "Analytical cookies are used to understand how visitors interact with the website. These cookies help provide information on metrics such as the number of visitors, bounce rate, traffic source, etc."],
+  ["performance", "Performance", "Performance cookies are used to understand and analyse the key performance indexes of the website which helps in delivering a better user experience for the visitors."],
+  ["advertisement", "Advertisement", "Advertisement cookies are used to provide visitors with customised advertisements based on the pages you visited previously and to analyse the effectiveness of the ad campaigns."],
+] as const;
+type Choice = Record<(typeof CONSENT)[number][0], boolean>;
+const NONE: Choice = { necessary: true, functional: false, analytics: false, performance: false, advertisement: false };
+const ALL: Choice = { necessary: true, functional: true, analytics: true, performance: true, advertisement: true };
+
+export function ConsentPreferences() {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [choice, setChoice] = useState<Choice>(NONE);
+  const [saved, setSaved] = useState(false);
+
+  function openPanel() {
+    try {
+      const s = localStorage.getItem(CONSENT_KEY);
+      setChoice(s ? { ...NONE, ...JSON.parse(s) } : NONE);
+    } catch {}
+    setSaved(false);
+    dialog.current?.showModal();
+  }
+  function save(c: Choice) {
+    setChoice(c);
+    try { localStorage.setItem(CONSENT_KEY, JSON.stringify(c)); } catch {}
+    setSaved(true);
+    setTimeout(() => dialog.current?.close(), 500);
+  }
+
+  return (
+    <>
+      <button
+        onClick={openPanel}
+        aria-label="Consent preferences"
+        className="press fixed bottom-5 left-4 z-40 grid size-12 place-items-center rounded-full bg-forest text-white shadow-[0_10px_24px_-8px_rgb(15_31_23/0.55)] ring-1 ring-white/15 hover:bg-forest-2"
+      >
+        <Cookie className="size-6" />
+      </button>
+
+      <dialog
+        ref={dialog}
+        aria-labelledby="consent-title"
+        onClick={(e) => e.target === dialog.current && dialog.current?.close()}
+        className="m-auto max-h-[min(720px,calc(100dvh-2rem))] w-[min(680px,calc(100vw-2rem))] overflow-hidden rounded-2xl bg-white p-0 text-ink shadow-[0_30px_70px_-20px_rgb(15_31_23/0.6)] backdrop:bg-forest/60 backdrop:backdrop-blur-sm open:flex open:flex-col"
+      >
+        <div className="flex items-center justify-between border-b border-forest/10 px-5 py-4 md:px-7">
+          <h2 id="consent-title" className="font-display text-xl font-bold tracking-[-0.02em]">Consent preferences</h2>
+          <button onClick={() => dialog.current?.close()} aria-label="Close" className="press grid size-9 place-items-center rounded-full hover:bg-paper">
+            <Close className="size-5" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-5 py-5 md:px-7">
+          <p className="text-[15px] leading-relaxed text-moss">
+            We use cookies to help you navigate efficiently and perform certain functions. Choose which categories you
+            allow. Necessary cookies are always on because the site can&apos;t work without them.
+          </p>
+          <ul className="mt-5 divide-y divide-forest/10 border-y border-forest/10">
+            {CONSENT.map(([key, label, text]) => (
+              <li key={key} className="relative">
+                <details className="group/c py-4">
+                  <summary className="flex cursor-pointer list-none items-center gap-3 pr-28">
+                    <Chevron className="size-4 shrink-0 -rotate-90 transition-transform duration-200 group-open/c:rotate-0" weight="bold" />
+                    <span className="font-semibold">{label}</span>
+                  </summary>
+                  <p className="mt-2 pl-7 text-sm leading-relaxed text-moss">{text}</p>
+                </details>
+                <div className="absolute right-0 top-4 flex h-6 items-center">
+                  {key === "necessary" ? (
+                    <span className="text-sm font-semibold text-forest-2">Always active</span>
+                  ) : (
+                    <label className="relative inline-flex cursor-pointer items-center">
+                      <input
+                        type="checkbox"
+                        className="peer sr-only"
+                        checked={choice[key]}
+                        onChange={(e) => setChoice({ ...choice, [key]: e.target.checked })}
+                        aria-label={`Allow ${label.toLowerCase()} cookies`}
+                      />
+                      <span className="h-6 w-11 rounded-full bg-forest/15 transition-colors duration-200 peer-checked:bg-red peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-red" />
+                      <span className="absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow-sm transition-transform duration-200 ease-(--ease-out) peer-checked:translate-x-5" />
+                    </label>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex flex-col-reverse items-stretch gap-3 border-t border-forest/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-7">
+          <button onClick={() => save(choice)} className="text-[15px] font-semibold text-ink underline underline-offset-4 hover:text-red">
+            {saved ? "Saved" : "Save my preferences"}
+          </button>
+          <div className="grid grid-cols-2 gap-3 sm:flex">
+            <button onClick={() => save(NONE)} className="press rounded-full px-5 py-3 text-[15px] font-semibold ring-1 ring-forest/25 hover:bg-paper">
+              Reject all
+            </button>
+            <button onClick={() => save(ALL)} className="press rounded-full bg-red px-5 py-3 text-[15px] font-semibold text-white hover:bg-red-deep">
+              Accept all
+            </button>
+          </div>
+        </div>
+      </dialog>
+    </>
   );
 }

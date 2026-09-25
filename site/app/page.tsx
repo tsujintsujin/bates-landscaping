@@ -1,13 +1,27 @@
 import Image from "next/image";
-import { CaseCarousel, ChatFab, GalleryMarquee, Header, HeroVideo, OpenChatButton, SoonToast, WordFill } from "@/components/client";
-import { Arrow, ArrowUpRight, FacebookLogo, InstagramLogo, LinkedinLogo, Mail, Phone } from "@/components/icons";
-import { ADDRESS, EMAIL, PHONE, PHONE_HREF, SOCIALS } from "@/lib/content";
+import Link from "next/link";
+import {
+  CaseCarousel,
+  ChatFab,
+  ConsentPreferences,
+  GalleryMarquee,
+  Header,
+  HeroVideo,
+  OpenChatButton,
+  TeamSection,
+  WordFill,
+} from "@/components/client";
+import { Arrow, ArrowUpRight, FacebookLogo, InstagramLogo, LinkedinLogo, Mail, Phone, Plus } from "@/components/icons";
+import { asset } from "@/lib/base";
+import { ADDRESS, EMAIL, FAQS, HISTORY, PHONE, PHONE_HREF, SERVICES, SOCIALS } from "@/lib/content";
 
 const SOCIAL_ICONS = { FacebookLogo, InstagramLogo, LinkedinLogo };
 const pill = "press inline-flex items-center gap-2 rounded-full px-5 py-3 text-[15px] font-semibold";
 const arrowNudge = "size-4 transition-transform duration-200 ease-(--ease-out) [@media(hover:hover)]:group-hover:translate-x-0.5";
 const textLink = "group inline-flex items-center gap-1.5 text-[15px] font-semibold";
 const label = "text-xs font-semibold uppercase tracking-[0.08em] text-white/50";
+const h2 = "font-display text-[clamp(1.9rem,3.6vw,3.25rem)] font-bold leading-[1.04] tracking-[-0.03em]";
+const wrap = "mx-auto max-w-[1180px] px-4 md:px-8 xl:px-0";
 
 /* Thin contour lines, drawn across a whole strip */
 function Contours({ className }: { className: string }) {
@@ -39,9 +53,9 @@ export default function Home() {
               Design, hardscaping, drainage and maintenance across Chester, Delaware and Montgomery Counties, PA.
             </p>
             <div className="rise mt-7 flex flex-wrap items-center justify-center gap-x-7 gap-y-4 [animation-delay:220ms] md:justify-start">
-              <a href="/book-now" className={`${pill} bg-red text-white hover:bg-red-deep`}>
+              <Link href="/book-now" className={`${pill} bg-red text-white hover:bg-red-deep`}>
                 Book now
-              </a>
+              </Link>
               <a href="#work" className={`${textLink} text-white hover:text-white/80`}>
                 See our work <Arrow className={arrowNudge} weight="bold" />
               </a>
@@ -67,7 +81,7 @@ export default function Home() {
               bg: "bg-red",
             },
           ].map((c) => (
-            <a
+            <Link
               key={c.title}
               href={c.href}
               className={`group grid grid-cols-[1fr_auto] items-center gap-4 overflow-hidden rounded-2xl ${c.bg} p-5 text-white shadow-[0_24px_50px_-20px_rgb(15_31_23/0.5)] lg:grid-cols-[1fr_1fr] lg:items-stretch lg:gap-0 lg:p-0`}
@@ -83,19 +97,19 @@ export default function Home() {
               </div>
               <div className="relative h-32 w-24 overflow-hidden [border-radius:0_62%_0_62%] md:h-40 md:w-32 lg:h-auto lg:min-h-52 lg:w-auto lg:[border-radius:0_0_0_70%]">
                 <Image
-                  src={c.img}
+                  src={asset(c.img)}
                   alt=""
                   fill
                   sizes="(min-width: 1024px) 300px, 130px"
                   className="object-cover transition-transform duration-700 ease-(--ease-out) [@media(hover:hover)]:group-hover:scale-105"
                 />
               </div>
-            </a>
+            </Link>
           ))}
         </section>
 
         {/* 3. Project galleries */}
-        <section id="work" className="scroll-mt-20 pb-24 pt-24 md:pb-32 md:pt-32">
+        <section id="work" className="scroll-mt-20 pb-24 pt-24 md:pb-28 md:pt-32">
           <div className="mx-auto max-w-5xl px-4 text-center">
             <WordFill
               text="Landscapes we've built and cared for across Southeastern PA."
@@ -110,13 +124,88 @@ export default function Home() {
               We provide the full range of landscape design and maintenance services to homeowners, property managers,
               HOAs, engineers and senior living facilities throughout Chester, Delaware and Montgomery Counties.
             </p>
-            <a href="/project-gallery" className={`${pill} group mt-7 bg-forest text-white hover:bg-red`}>
+            <Link href="/project-gallery" className={`${pill} group mt-7 bg-forest text-white hover:bg-red`}>
               View all projects <Arrow className={arrowNudge} weight="bold" />
-            </a>
+            </Link>
           </div>
         </section>
 
-        {/* 4. We are Bates Landscaping: case studies */}
+        {/* 4. Services: five panels, the hovered one widens (their five homepage cards) */}
+        <section className="bg-forest py-24 text-white md:py-28">
+          <div className={wrap}>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <h2 className={h2}>Our services</h2>
+              <Link href="/all-services" className={`${textLink} text-white hover:text-white/80`}>
+                All services <Arrow className={arrowNudge} weight="bold" />
+              </Link>
+            </div>
+            <ul className="svc-row mt-10 flex flex-col gap-3 md:mt-12">
+              {SERVICES.map((s) => (
+                <li key={s.title} className="svc">
+                  <Link href={s.href} className="svc-card group relative flex h-full min-h-60 flex-col justify-end overflow-hidden rounded-2xl bg-forest-2 p-5 md:min-h-72 md:p-6 lg:px-4">
+                    <Image src={asset(s.img)} alt="" fill sizes="(min-width: 1024px) 600px, 100vw" className="object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-forest/95 via-forest/45 to-forest/5" />
+                    <div className="relative">
+                      <h3 className="svc-title font-display text-[clamp(1.25rem,1.8vw,1.6rem)] font-bold leading-[1.08] tracking-[-0.02em]">
+                        {s.title}
+                      </h3>
+                      <div className="svc-more">
+                        <div className="overflow-hidden">
+                          {"note" in s && (
+                            <span className="mt-3 inline-block rounded-[3px] bg-white px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-forest">
+                              {s.note}
+                            </span>
+                          )}
+                          <p className="mt-3 max-w-[40ch] text-[15px] leading-snug text-white/80 lg:w-[34ch]">{s.line}</p>
+                          <span className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-semibold">
+                            Learn more <Arrow className={arrowNudge} weight="bold" />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* 5. We are Bates Landscaping */}
+        <section className="py-24 md:py-32">
+          <div className={`${wrap} grid items-center gap-10 md:grid-cols-[1fr_1.05fr] md:gap-16`}>
+            <div>
+              <h2 className={h2}>
+                <span className="mb-2 block text-[clamp(1.1rem,1.6vw,1.4rem)] font-semibold tracking-normal text-moss">We are</span>
+                Bates Landscaping
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-ink">
+                Founded in 2011 by Justin Bates, Bates Landscaping has been known for high quality workmanship and
+                family-oriented relationships with their clients and employees.
+              </p>
+              <p className="mt-4 text-[15px] leading-relaxed text-moss">
+                To maintain a competitive edge over the years, we strive to source the best material, work with the latest
+                technology and equipment, while employing and training the best team members to deliver 100% client
+                satisfaction.
+              </p>
+              <Link href="/about-us" className={`${textLink} mt-6 text-ink hover:text-red`}>
+                About us <Arrow className={arrowNudge} weight="bold" />
+              </Link>
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <Image src={asset("/img/crew.webp")} alt="The Bates Landscaping crew at the yard" fill sizes="(min-width: 768px) 600px, 100vw" className="object-cover" />
+            </div>
+          </div>
+          <ol className={`${wrap} mt-14 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 md:mt-20 lg:grid-cols-6`}>
+            {HISTORY.map(([year, text]) => (
+              <li key={year} className="border-t border-forest/15 pt-4">
+                <p className="font-display text-2xl font-bold tracking-[-0.02em] text-red">{year}</p>
+                <p className="mt-1.5 text-sm leading-snug text-moss">{text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* 6. Highest rated: case studies */}
         <section className="bg-white pb-24 pt-24 md:pb-28 md:pt-28">
           <div className="mx-auto max-w-5xl px-4 text-center">
             <WordFill
@@ -127,18 +216,14 @@ export default function Home() {
           <div className="mt-10 md:mt-14">
             <CaseCarousel />
           </div>
-          <div className="mx-auto mt-10 max-w-xl px-4 text-center md:mt-12">
-            <p className="text-[15px] leading-relaxed text-moss">
-              Founded in 2011 by Justin Bates, Bates Landscaping has been known for high quality workmanship and
-              family-oriented relationships with their clients and employees.
-            </p>
-            <a href="/case-studies" className={`${pill} group mt-7 bg-forest text-white hover:bg-red`}>
+          <div className="mt-10 text-center md:mt-12">
+            <Link href="/case-studies" className={`${pill} group bg-forest text-white hover:bg-red`}>
               All case studies <Arrow className={arrowNudge} weight="bold" />
-            </a>
+            </Link>
           </div>
         </section>
 
-        {/* 5. We're hiring: full-width strip */}
+        {/* 7. We're hiring: full-width strip */}
         <section className="relative overflow-hidden bg-forest text-white">
           <Contours className="pointer-events-none absolute inset-0 size-full text-white/[0.09]" />
           <div className="relative mx-auto flex max-w-[1180px] flex-col items-start gap-6 px-4 py-12 md:flex-row md:items-center md:justify-between md:px-8 md:py-14 xl:px-0">
@@ -150,19 +235,57 @@ export default function Home() {
                 On-site training, creative pay packages, a team atmosphere and benefits. Applications in English and Spanish.
               </p>
             </div>
-            <a href="/join-our-team" className="press group inline-flex shrink-0 items-center gap-1">
+            <Link href="/join-our-team" className="press group inline-flex shrink-0 items-center gap-1">
               <span className="rounded-full bg-red px-5 py-3 text-[15px] font-semibold transition-colors group-hover:bg-red-deep">
                 See Careers
               </span>
               <span className="grid size-11 place-items-center rounded-full bg-white text-forest">
                 <Arrow className={arrowNudge} weight="bold" />
               </span>
-            </a>
+            </Link>
           </div>
         </section>
 
-        {/* 6. Floating card straddling the page/footer seam */}
-        <section className="relative z-10 bg-[linear-gradient(to_bottom,var(--color-paper)_calc(50%+2.5rem),var(--color-forest)_calc(50%+2.5rem))] px-4 pt-20 md:bg-[linear-gradient(to_bottom,var(--color-paper)_calc(50%+3.5rem),var(--color-forest)_calc(50%+3.5rem))] md:px-8 md:pt-28">
+        {/* 8. The team */}
+        <section className="py-24 md:py-28">
+          <div className={wrap}>
+            <h2 className={`${h2} text-center`}>The team</h2>
+            <div className="mt-10 md:mt-14">
+              <TeamSection />
+            </div>
+          </div>
+        </section>
+
+        {/* 9. FAQ: six of theirs, compact; the chat covers the rest */}
+        <section className="bg-white py-24 md:py-28">
+          <div className={`${wrap} grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-16`}>
+            <div>
+              <h2 className={h2}>Frequently asked questions</h2>
+              <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-moss">
+                Quick answers from our team. Anything else, ask us in the chat.
+              </p>
+              <Link href="/faq" className={`${textLink} mt-6 text-ink hover:text-red`}>
+                All questions <Arrow className={arrowNudge} weight="bold" />
+              </Link>
+            </div>
+            <div className="border-y border-forest/10">
+              {FAQS.map(([q, a], i) => (
+                <details key={q} name="faq" className={`faq group/f ${i ? "border-t border-forest/10" : ""}`}>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[17px] font-semibold leading-snug">
+                    {q}
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-forest/5 transition-[transform,background-color] duration-300 ease-(--ease-out) group-open/f:rotate-45 group-open/f:bg-red group-open/f:text-white">
+                      <Plus className="size-4" weight="bold" />
+                    </span>
+                  </summary>
+                  <p className="max-w-[60ch] pb-6 pr-14 text-[15px] leading-relaxed text-moss">{a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 10. Floating card straddling the page/footer seam */}
+        <section className="relative z-10 bg-[linear-gradient(to_bottom,white_calc(50%+2.5rem),var(--color-forest)_calc(50%+2.5rem))] px-4 pt-4 md:bg-[linear-gradient(to_bottom,white_calc(50%+2rem),var(--color-forest)_calc(50%+2rem))] md:px-8">
           <div className="floating relative mx-auto max-w-[1180px] overflow-hidden rounded-3xl bg-[linear-gradient(120deg,#7a0b10_0%,var(--color-red-deep)_45%,var(--color-red)_100%)] p-8 text-white shadow-[0_30px_60px_-20px_rgb(15_31_23/0.55)] md:p-12">
             <svg
               viewBox="0 0 400 300"
@@ -178,30 +301,30 @@ export default function Home() {
             </svg>
             <div className="relative max-w-xl">
               <h2 className="font-display text-[clamp(1.9rem,3.2vw,2.75rem)] font-bold leading-[1.04] tracking-[-0.03em]">
-                Not sure where to start?
+                We&apos;re here to help!
               </h2>
               <p className="mt-3 text-base text-white/85">
-                Tell us what&apos;s going on with your property and we&apos;ll point you to the right service.
+                Discover how our personalized approach to landscaping can benefit your property.
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-4">
                 <OpenChatButton className={`${pill} bg-white text-red-deep hover:bg-paper`}>Ask us</OpenChatButton>
-                <a href="/book-now" className={`${textLink} text-white hover:text-white/80`}>
+                <Link href="/book-now" className={`${textLink} text-white hover:text-white/80`}>
                   Book now <Arrow className={arrowNudge} weight="bold" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      {/* 7. Footer */}
+      {/* 11. Footer */}
       <footer className="bg-forest pb-28 pt-14 text-white md:pb-10 md:pt-20">
         <div className="mx-auto grid max-w-[1180px] gap-12 px-4 md:grid-cols-[1fr_1.4fr] md:px-8 xl:px-0">
           <div>
             <p className={label}>Explore</p>
             <nav aria-label="Footer" className="mt-4 grid grid-cols-2 gap-x-6 gap-y-1 md:grid-cols-1">
               {[
-                ["Home", "#top-probe"],
+                ["Home", "/"],
                 ["Commercial", "/commercial-landscaping-services"],
                 ["Residential", "/residential-landscaping-services"],
                 ["Portfolio", "/project-gallery"],
@@ -209,13 +332,13 @@ export default function Home() {
                 ["Careers", "/join-our-team"],
                 ["Contact", "/request-a-quote"],
               ].map(([text, href]) => (
-                <a
+                <Link
                   key={text}
                   href={href}
                   className="w-fit py-1 font-display text-xl font-bold leading-tight tracking-[-0.02em] transition-colors hover:text-red md:text-[clamp(1.5rem,2.4vw,2rem)]"
                 >
                   {text}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>
@@ -225,8 +348,8 @@ export default function Home() {
               <p className={label}>Head office</p>
               <p className="mt-3 leading-relaxed">{ADDRESS[0]}<br />{ADDRESS[1]}</p>
               <p className="mt-2 text-white/65">
-                Also in <a href="/west-chester" className="underline underline-offset-2 hover:text-red">West Chester</a> and{" "}
-                <a href="/phoenixville" className="underline underline-offset-2 hover:text-red">Phoenixville</a>
+                Also in <Link href="/west-chester" className="underline underline-offset-2 hover:text-red">West Chester</Link> and{" "}
+                <Link href="/phoenixville" className="underline underline-offset-2 hover:text-red">Phoenixville</Link>
               </p>
             </div>
             <div>
@@ -264,13 +387,24 @@ export default function Home() {
                 })}
               </div>
             </div>
-            <div className="sm:col-span-2">
-              <p className="max-w-md text-white/65">The Bates Difference comes from our unique approach to the design process.</p>
-              <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium">
-                <a href="https://portal.golmn.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-red">
-                  Track My Project <ArrowUpRight className="size-3.5" weight="bold" />
-                </a>
-                <a href="/sitemap" className="hover:text-red">Sitemap</a>
+            <div className="sm:col-span-2 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="max-w-sm text-white/65">The Bates Difference comes from our unique approach to the design process.</p>
+                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium">
+                  <a href="https://portal.golmn.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-red">
+                    Track My Project <ArrowUpRight className="size-3.5" weight="bold" />
+                  </a>
+                  <Link href="/sitemap" className="hover:text-red">Sitemap</Link>
+                </div>
+              </div>
+              <div className="w-fit shrink-0 rounded-xl bg-white px-3 py-2">
+                <Image
+                  src={asset("/img/aoe-2024.webp")}
+                  alt="National Association of Landscape Professionals, 2024 Awards of Excellence Winner"
+                  width={600}
+                  height={217}
+                  className="h-auto w-[180px]"
+                />
               </div>
             </div>
           </div>
@@ -279,14 +413,14 @@ export default function Home() {
         <div className="mx-auto mt-12 flex max-w-[1180px] flex-col gap-2 border-t border-white/10 px-4 pt-6 text-[13px] text-white/50 md:mt-16 md:flex-row md:items-center md:justify-between md:px-8 xl:px-0">
           <p>© {new Date().getFullYear()} Bates Landscaping Ltd. Concept remodel, not the official site.</p>
           <div className="flex gap-5">
-            <a href="/terms-and-conditions" className="hover:text-white">Terms and Conditions</a>
-            <a href="/privacy-policy" className="hover:text-white">Privacy Policy</a>
+            <Link href="/terms-and-conditions" className="hover:text-white">Terms and Conditions</Link>
+            <Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
           </div>
         </div>
       </footer>
 
       <ChatFab />
-      <SoonToast />
+      <ConsentPreferences />
     </>
   );
 }

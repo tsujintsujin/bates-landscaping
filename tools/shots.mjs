@@ -7,7 +7,7 @@
 // reading the live page; use this for proof images.
 //
 // Usage (dev server must be running):
-//   node tools/shots.mjs <outDir> [path=/]
+//   node tools/shots.mjs <outDir> [path=/]   (path is under the /bates base path, e.g. /about-us)
 // Writes <outDir>/desktop-NN.jpg (1440x900) and mobile-NN.jpg (390x844 @2x), one per ~viewport of scroll,
 // and prints innerWidth vs scrollWidth for each (equal = no horizontal overflow).
 import { spawn } from "node:child_process";
@@ -15,7 +15,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const OUT = resolve(process.argv[2] ?? "shots");
-const URL = "http://localhost:3012" + (process.argv[3] ?? "/");
+const URL = "http://localhost:3012/bates" + (process.argv[3] ?? "/");
 mkdirSync(OUT, { recursive: true });
 
 const chrome = spawn("C:/Program Files/Google/Chrome/Application/chrome.exe", [

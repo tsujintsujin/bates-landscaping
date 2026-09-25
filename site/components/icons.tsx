@@ -9,6 +9,8 @@ export {
   X as Close,
   CaretDown as Chevron,
   ChatCircle as Chat,
+  Cookie,
+  Plus,
   FacebookLogo,
   InstagramLogo,
   LinkedinLogo,

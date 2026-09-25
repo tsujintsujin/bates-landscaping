@@ -204,3 +204,43 @@ Justin's mapping of Hooper sections → Bates:
   keyed slides at offsets -2..2, loops both ways, swipe on phones. Marquee never stops (Justin: must not pause on hover); off for reduced motion.
 - 2026-09-25: Justin: **marquee must not stop** (hover pause removed). Then: push to GitHub + write a full handoff;
   he starts a new session for the other pages.
+
+## 2026-09-25: Justin's answers to the open list
+1. Overall size: **fine now**, no global shrink.
+2. My gallery captions: fine.
+3. Floating card heading: **use their text** ("WE'RE HERE TO HELP!").
+4. **Visible FAQ: yes**, but nothing like theirs (31 Qs dumped on the homepage, took huge space). Compact; the chatbot
+   covers the rest.
+5. Booking email: **reuse the Aqua Brevo sender**, and the email should say it's from Aqua (sender name / subject
+   related to Aqua), since that's the verified sender.
+6. Asked for an **SVG of their logo**.
+7. **Remove the "not part of this demo yet" toast**; other pages come next anyway.
+8. Off-site links (Trainual, socials, portal): **open in a new tab**.
+9. Deploy to **justin94.space/bates**, subpages under it (justin94.space/bates/about etc.).
+10. **Yes** to the "what I found on your current site" sheet, as a file.
+11. **Yes** to the AOE 2024 badge (footer).
+12. Their **5-card services list must be developed** (on the homepage). He asked where "Book Project Consultation
+    Now" is on their site; he hadn't seen it.
+- New: add a **"WE ARE: Bates Landscaping" section before "One of the highest rated companies..."**.
+- New (mid-build): **"The team" section after "We're hiring!"**: headshots in circles, name below. Interaction:
+  press = circle presses down and pops back on mouse-up; then all other heads fade out, the clicked head slides to the
+  left, the person's details slide out from inside the circle to the right. Clicking anywhere on the details reverses
+  the whole sequence.
+- "Book Project Consultation Now": exists only in their homepage's HTML, in a `.custom-container` block just above the
+  footer (heading + "Book Now" button), but it is `display:none` at desktop width, so it never shows there (checked
+  live in Chrome). Couldn't tell from their CSS whether phones show it. Our floating card covers that job anyway.
+- Logo SVG: traced from their 1044x275 original (`recon/brand/bates-logo-original.png`) with vtracer, red and grey
+  layers set to exact #ED1C24 / #585858 → `recon/brand/bates-logo.svg`; square mark → `bates-mark.svg` (favicon).
+- AOE 2024 = NALP (National Association of Landscape Professionals) 2024 Awards of Excellence Winner badge
+  (`recon/brand/aoe2024winner.png`, 1665x601).
+- Service descriptions for the 5 cards come from each service's own page (captured in `recon/services/`), because
+  their homepage cards have swapped text.
+- New: **Consent Preferences** button, bottom-left, like their CookieYes one (round icon button opening "Customise
+  Consent Preferences": Necessary always active, Functional, Analytics, Performance, + Reject All / Save My Preferences /
+  Accept All). Build it in our look, not theirs.
+- 2026-09-25: Deployed. Vercel project `bates-landscaping` (root `site/`, prod branch `main`), prod alias
+  https://bates-landscaping.vercel.app/bates. Portfolio rewrites `/bates` + `/bates/:path*` → that app, so the site is
+  https://justin94.space/bates and every future page lands under it with no Portfolio change. Chose Vercel over
+  Cloudflare because the justin94.space router proxies to vercel.app apps; the chatbot can still use Workers AI via API.
+- "What I found" sheet: `deliverables/Bates-site-notes.pdf`. Dropped two earlier claims after checking live: the login
+  form is hidden (not exposed), and the site is not slow (1.7s LCP desktop).

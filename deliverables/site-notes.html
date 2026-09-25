@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Notes on bateslandscaping.co</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap" rel="stylesheet">
+<style>
+  @page { size: Letter; margin: 0.5in 0.65in; }
+  :root { --red:#ed1c24; --forest:#0f1f17; --moss:#5d6b5f; --ink:#121a15; --line:#dfe3dc; --paper:#f3f4f0; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: Asap, system-ui, sans-serif; font-size: 10.5pt; line-height: 1.5; color: var(--ink); }
+  h1, h2, h3 { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  header { display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 3px solid var(--red); padding-bottom: 12px; }
+  header img { height: 42px; }
+  header .meta { text-align:right; font-size: 9pt; color: var(--moss); }
+  h1 { font-size: 24pt; line-height: 1.05; margin-top: 22px; }
+  .lede { font-size: 11.5pt; max-width: 42em; margin: 8px 0 0; }
+  h2 { font-size: 13.5pt; margin: 22px 0 8px; }
+  .good { background: var(--paper); border-radius: 10px; padding: 12px 16px; margin-top: 16px; }
+  .good ul { margin: 6px 0 0; padding-left: 18px; }
+  .good li { margin: 3px 0; }
+  table { width:100%; border-collapse: collapse; margin-top: 4px; }
+  th { text-align:left; font-size: 8.5pt; text-transform: uppercase; letter-spacing: .06em; color: var(--moss); font-weight: 600; padding: 6px 8px; border-bottom: 1.5px solid var(--forest); }
+  td { vertical-align: top; padding: 7px 8px; border-bottom: 1px solid var(--line); }
+  tr { break-inside: avoid; }
+  td:first-child { width: 22px; font-family: "Bricolage Grotesque", sans-serif; color: var(--red); font-weight: 700; }
+  td:nth-child(2) { width: 46%; }
+  td b { display:block; font-weight: 600; margin-bottom: 2px; }
+  .fix { color: var(--moss); }
+  code { font-size: 9pt; background: var(--paper); padding: 0 3px; border-radius: 3px; }
+  footer { margin-top: 14px; break-inside: avoid; padding-top: 10px; border-top: 1px solid var(--line); font-size: 9pt; color: var(--moss); display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+<header>
+  <img src="../recon/brand/bates-logo.svg" alt="Bates Landscaping">
+  <div class="meta">Prepared by Justin Masiga<br>September 2026</div>
+</header>
+
+<h1>Notes on bateslandscaping.co</h1>
+<p class="lede">While rebuilding your homepage as a demo, I went through the current site page by page. These are the
+things I noticed, each with what the remodel does about it. Everything here was checked on the live site.</p>
+
+<div class="good">
+  <h3 style="font-size:11pt">What already works well</h3>
+  <ul>
+    <li><b style="font-weight:600">Real case studies with county and price range.</b> Few landscapers publish this. It's the strongest proof on the site.</li>
+    <li><b style="font-weight:600">Real people.</b> Team bios with consistent headshots in Bates red, and the NALP 2024 Awards of Excellence.</li>
+    <li><b style="font-weight:600">It loads quickly.</b> The main content showed in about 1.7 seconds on desktop and 0.7 seconds on a phone in my test.</li>
+    <li><b style="font-weight:600">Clear service area.</b> Chester, Delaware and Montgomery Counties, stated consistently.</li>
+  </ul>
+</div>
+
+<h2>What I found</h2>
+<table>
+  <thead><tr><th></th><th>On the current site</th><th>In the remodel</th></tr></thead>
+  <tbody>
+    <tr><td>1</td>
+      <td><b>The homepage service cards have mixed-up descriptions.</b> The Maintenance card talks about water problems, the Drainage card describes snow removal, Snow + Ice talks about water again, and Bamboo repeats the generic company line.</td>
+      <td class="fix">Each card uses the opening line from that service's own page.</td></tr>
+    <tr><td>2</td>
+      <td><b>Booking asks for photos but never says where to send them.</b> Book Now, step 3: "Email 3-5 photos of your property to the provided email address." No address appears on the page.</td>
+      <td class="fix">Photos upload as part of the booking form, and the booking arrives by email (in progress).</td></tr>
+    <tr><td>3</td>
+      <td><b>"Privacy Policy" opens the SMS terms.</b> The footer link goes to <code>/sms-terms-condition/</code>.</td>
+      <td class="fix">Separate privacy policy link, plus a consent-preferences panel.</td></tr>
+    <tr><td>4</td>
+      <td><b>Two different phone numbers.</b> The site shows (484) 887-8678; the trucks and snow photos show (484) 443-8772.</td>
+      <td class="fix">One number everywhere, one tap to call on phones. Which is the right one?</td></tr>
+    <tr><td>5</td>
+      <td><b>The email address is hard to find and uses a different domain.</b> <code>info@bateslandscaping.net</code> (.net, while the site is .co) only appears on two inner pages.</td>
+      <td class="fix">Email shown in every footer.</td></tr>
+    <tr><td>6</td>
+      <td><b>"One of the highest rated companies", but no reviews anywhere.</b> There are no testimonials or review links on the site to back up the claim.</td>
+      <td class="fix">A spot is ready for real reviews (none were invented for the demo).</td></tr>
+    <tr><td>7</td>
+      <td><b>31 FAQs are stacked on the homepage</b> (with 24 more on inner pages). One answer reads "Too many to list here! – check out Our Services page"; the scheduling answer only covers hardscaping projects.</td>
+      <td class="fix">Six short FAQs on the homepage, with a chat assistant that answers from all 55 and a full FAQ page in progress.</td></tr>
+    <tr><td>8</td>
+      <td><b>Pages that overlap.</b> Book Now and Request a Quote show the same booking calendar; there are two gallery pages (<code>/project-gallery/</code> and <code>/project-gallery-tabs/</code>); the Home link is <code>?page_id=19</code>.</td>
+      <td class="fix">One booking page, one gallery, clean addresses. Existing page addresses are kept so search rankings carry over.</td></tr>
+    <tr><td>9</td>
+      <td><b>Repeated and hidden blocks on the homepage.</b> "WE ARE: Bates Landscaping" appears twice, and a "Book Project Consultation Now" block sits in the page code but never shows on desktop.</td>
+      <td class="fix">Each section appears once.</td></tr>
+    <tr><td>10</td>
+      <td><b>Case studies share titles.</b> Four different jobs are all called "Bamboo Removal" and two are "Custom Pondless Water Feature", so they look identical in menus and search results.</td>
+      <td class="fix">Case studies shown with county, type and price tags so each one is distinct.</td></tr>
+    <tr><td>11</td>
+      <td><b>Gallery photos titled with file names.</b> In a sample of 20, 12 had only a file name as their title (for example "4-2", "123", "untitled-design-76"), which search engines and screen readers read out as-is.</td>
+      <td class="fix">Every photo has a short description, such as "Patios, West Chester".</td></tr>
+    <tr><td>12</td>
+      <td><b>Bamboo is missing from the Residential menu,</b> even though three of the four bamboo case studies are homeowners.</td>
+      <td class="fix">Bamboo Remediation listed under both Commercial and Residential.</td></tr>
+  </tbody>
+</table>
+
+<footer>
+  <span>Justin Masiga · Remodel demo: justin94.space/bates</span>
+  <span>Page addresses and copy checked on bateslandscaping.co, September 25, 2026</span>
+</footer>
+</body>
+</html>

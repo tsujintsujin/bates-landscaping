@@ -9,8 +9,9 @@ web
 ## Stack
 
 Next.js 16 (App Router, TypeScript) + Tailwind CSS v4 + GSAP (ScrollTrigger) in `site/`. Icons: `@phosphor-icons/react`.
-Fonts via `next/font/google`: Bricolage Grotesque (display), Asap (body). Planned deploy: Cloudflare (OpenNext) so the
-Workers AI chatbot and the Brevo booking email sit in the same app; not deployed yet.
+Fonts via `next/font/google`: Bricolage Grotesque (display), Asap (body). Deployed on Vercel (project
+`bates-landscaping`, root `site/`), served at justin94.space/bates through the Portfolio app's rewrites; `basePath` is
+`/bates`. The chatbot can call Cloudflare Workers AI from a server route; booking email goes through Brevo.
 
 ## Users
 
@@ -47,7 +48,8 @@ their team, their photos, their words.
 - Must not book onto Bates's real calendar or email their real inbox during the demo. Bookings go to
   justin.masiga.94@gmail.com until Justin says to switch.
 - Free tiers only: Cloudflare Workers + Workers AI (10,000 neurons/day), Brevo (300 emails/day).
-- Undecided: FAQ page in addition to the bot; Brevo sender; the "what I found on your current site" sheet. See HANDOFF.md.
+- Decided: a compact visible FAQ as well as the bot; bookings use the Aqua Brevo sender (email says Aqua); the
+  "what I found" sheet is `deliverables/Bates-site-notes.pdf`. Open items: HANDOFF.md §10.
 
 ## Brand Commitments
 
@@ -62,8 +64,8 @@ their team, their photos, their words.
 - `recon/team.json` + `recon/team/`: 10 team members with bios and headshots.
 - `recon/portfolio/` + `manifest.json`: 20 gallery photos; `recon/faq.md`: 55 FAQs verbatim; `recon/home-copy.md`.
 - `recon/hero-video.webm`: hero footage trimmed by Justin.
-- **Absent, never fabricate:** testimonials (Bates has none anywhere), opening hours, stats, awards beyond the AOE 2024
-  badge, prices beyond those in the case studies.
+- **Absent, never fabricate:** testimonials (Bates has none anywhere), opening hours, stats, awards beyond the NALP 2024
+  Awards of Excellence badge, prices beyond those in the case studies.
 
 ## Product Principles
 
