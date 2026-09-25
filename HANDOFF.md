@@ -105,7 +105,9 @@ Global rules from his `CLAUDE.md` (auto-loaded, summarised):
   `site`**, framework Next.js, production branch `main`. Every merge to `main` deploys production; branch pushes get
   preview deployments. The repo root has `.vercel/project.json` (gitignored) from `vercel link`, and `vercel link` also
   wrote a `.env.local` with a short-lived OIDC token (gitignored; never commit it).
-- Production app URL: **PROD_URL_PLACEHOLDER** (serves under `/bates`).
+- Production app URL: **https://bates-landscaping.vercel.app/bates** (public). Per-deployment URLs
+  (`bates-landscaping-<hash>-tsujintsujins-projects.vercel.app`) sit behind Vercel's login (deployment protection
+  "all except custom domains"), which is expected; the production alias and justin94.space are public.
 - **justin94.space/bates** works through the **Portfolio** project (`D:\AIO Freelance\Portfolio`, repo
   `tsujintsujin/portfolio`): its `next.config.ts` `rewrites()` maps `/bates` and `/bates/:path*` to the Vercel app. New
   pages need no Portfolio change (`/bates/:path*` covers them).

@@ -238,3 +238,9 @@ Justin's mapping of Hooper sections → Bates:
 - New: **Consent Preferences** button, bottom-left, like their CookieYes one (round icon button opening "Customise
   Consent Preferences": Necessary always active, Functional, Analytics, Performance, + Reject All / Save My Preferences /
   Accept All). Build it in our look, not theirs.
+- 2026-09-25: Deployed. Vercel project `bates-landscaping` (root `site/`, prod branch `main`), prod alias
+  https://bates-landscaping.vercel.app/bates. Portfolio rewrites `/bates` + `/bates/:path*` → that app, so the site is
+  https://justin94.space/bates and every future page lands under it with no Portfolio change. Chose Vercel over
+  Cloudflare because the justin94.space router proxies to vercel.app apps; the chatbot can still use Workers AI via API.
+- "What I found" sheet: `deliverables/Bates-site-notes.pdf`. Dropped two earlier claims after checking live: the login
+  form is hidden (not exposed), and the site is not slow (1.7s LCP desktop).
