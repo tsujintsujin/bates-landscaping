@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "bates", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "site", "run", "dev", "--", "-p", "3012"], "port": 3012 }
+  ]
+}
