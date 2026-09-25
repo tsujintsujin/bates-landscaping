@@ -156,7 +156,8 @@ All live in `site/components/client.tsx` (client) and `site/app/page.tsx` (marku
 - **Text link with arrow:** no background, semibold, arrow nudges 2px right on hover. Used as the second action next
   to a button ("See our work →" in the hero, "Book now →" in the floating card). Rule from Justin: **one button + one
   text link**, never two buttons side by side.
-- **Pill + round arrow button pair** ("See Careers" + white circle with arrow), from Hooper's footer CTA.
+- **Pill with arrow circle** ("See Careers"): one red pill, text then a white 36px circle with the arrow inside its
+  right end (padding 6px on the right, 20px on the left); hover darkens the pill and nudges the arrow.
 - Every pressable has class `press`: `scale(0.97)` on `:active`, 160ms custom ease-out (`globals.css`).
 - Hover effects that move things are gated behind `@media (hover:hover)`.
 
@@ -195,9 +196,10 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
   grow to 1.6rem. Below `lg` they stack with everything visible.
 - **Team** (`TeamSection`): circle headshots (96px phone, 148px desktop), name + title under each. Press scales the
   circle to 0.92; click: others fade (250ms), the head slides to the left edge (550ms ease-in-out, 200ms delay), the
-  details reveal from behind the circle with `clip-path` + translate (500ms ease-out, 700ms delay). Clicking the
-  details reverses it (details 300ms, head 550ms after 300ms, others fade back in at 750ms). Stage height animates to
-  fit the bio.
+  details reveal from behind the circle across the full remaining width with `clip-path` + translate (500ms ease-out,
+  700ms delay). Clicking the details closes it: the details fade out in place (300ms, Justin's call), then the head
+  slides home (550ms after 300ms) and the others fade back in (750ms). Stage height animates to fit the bio. The head's
+  offset comes from layout offsets and is re-measured on resize.
 - **FAQ accordion**: native `<details name="faq">` (exclusive), 1px forest/10 dividers, round "+" that rotates into a
   red "×" when open, `::details-content` height animation where supported.
 - **Consent Preferences**: round forest button bottom-left (cookie icon), native `<dialog>` with a blurred forest

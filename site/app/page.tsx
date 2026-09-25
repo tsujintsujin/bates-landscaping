@@ -235,11 +235,12 @@ export default function Home() {
                 On-site training, creative pay packages, a team atmosphere and benefits. Applications in English and Spanish.
               </p>
             </div>
-            <Link href="/join-our-team" className="press group inline-flex shrink-0 items-center gap-1">
-              <span className="rounded-full bg-red px-5 py-3 text-[15px] font-semibold transition-colors group-hover:bg-red-deep">
-                See Careers
-              </span>
-              <span className="grid size-11 place-items-center rounded-full bg-white text-forest">
+            <Link
+              href="/join-our-team"
+              className="press group inline-flex shrink-0 items-center gap-3 rounded-full bg-red py-1.5 pl-5 pr-1.5 text-[15px] font-semibold hover:bg-red-deep"
+            >
+              See Careers
+              <span className="grid size-9 place-items-center rounded-full bg-white text-forest">
                 <Arrow className={arrowNudge} weight="bold" />
               </span>
             </Link>

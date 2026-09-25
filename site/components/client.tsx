@@ -495,12 +495,13 @@ export function ChatFab() {
 
 /* ---------- The team: circles; click = others fade, head slides left, details slide out of the circle ---------- */
 // Sequence (open):  others fade 0-250ms → head slides to the left edge 200-750ms → details slide out 700-1200ms.
-// Sequence (close): details slide back into the circle 0-300ms → head slides home 250-800ms → others fade in 750ms+.
+// Sequence (close): details fade out 0-300ms → head slides home 300-850ms → others fade in 750ms+.
 // Clicking anywhere on the details (or Esc, or the close button) runs the close sequence.
 
 export function TeamSection() {
   const [sel, setSel] = useState<number | null>(null); // last person opened (kept during the close sequence)
   const [open, setOpen] = useState(false);
+  const [fading, setFading] = useState(false); // details fading out after a close
   const [shift, setShift] = useState({ x: 0, y: 0 });
   const [gridH, setGridH] = useState<number>();
   const [panelH, setPanelH] = useState(0);
@@ -509,17 +510,32 @@ export function TeamSection() {
   const heads = useRef<(HTMLButtonElement | null)[]>([]);
   const panel = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
+  const openSel = useRef<number | null>(null); // who is open right now, for the resize observer
 
-  // Keep the stage as tall as the grid (and the open panel) so the page doesn't jump.
+  // Distance from a head's circle to the grid's top-left, from layout offsets (unaffected by the transform itself).
+  const measure = (i: number) => {
+    const b = heads.current[i]!;
+    const c = circles.current[i]!;
+    return { x: -(b.offsetLeft + c.offsetLeft), y: -(b.offsetTop + c.offsetTop) };
+  };
+
+  // Keep the stage as tall as the grid (and the open panel) so the page doesn't jump, and keep an open head pinned to
+  // the left edge if the width changes (window resize, DevTools opening).
   useEffect(() => {
-    const ro = new ResizeObserver(() => setGridH(grid.current!.offsetHeight));
+    const ro = new ResizeObserver(() => {
+      setGridH(grid.current!.offsetHeight);
+      if (openSel.current !== null) setShift(measure(openSel.current));
+    });
     ro.observe(grid.current!);
     return () => ro.disconnect();
   }, []);
 
   const close = useCallback(() => {
+    openSel.current = null;
     setOpen(false);
-    if (sel !== null) setTimeout(() => heads.current[sel]?.focus({ preventScroll: true }), 800);
+    setFading(true);
+    setTimeout(() => setFading(false), 320);
+    if (sel !== null) setTimeout(() => heads.current[sel]?.focus({ preventScroll: true }), 900);
   }, [sel]);
 
   useEffect(() => {
@@ -532,9 +548,9 @@ export function TeamSection() {
   }, [open, close]);
 
   function pick(i: number) {
-    const c = circles.current[i]!.getBoundingClientRect();
-    const g = grid.current!.getBoundingClientRect();
-    setShift({ x: g.left - c.left, y: g.top - c.top });
+    openSel.current = i;
+    setShift(measure(i));
+    setFading(false);
     setSel(i);
     setOpen(true);
   }
@@ -583,7 +599,8 @@ export function TeamSection() {
         })}
       </ul>
 
-      {/* Details: tucked behind the circle, slides out to the right. Click anywhere on it to close. */}
+      {/* Details: tucked behind the circle, slides out to the right across the full width. Click anywhere on it to
+          close; closing fades it out in place. */}
       <div
         ref={panel}
         id="team-details"
@@ -591,15 +608,17 @@ export function TeamSection() {
         aria-label={p ? `About ${p.name}` : undefined}
         aria-hidden={!open}
         onClick={open ? close : undefined}
-        className={`absolute right-0 top-0 cursor-pointer pb-2 pl-4 transition-[clip-path,transform,opacity] ease-(--ease-out) motion-reduce:transition-none md:pl-8 ${
+        className={`absolute right-0 top-0 cursor-pointer pb-2 pl-4 ease-(--ease-out) motion-reduce:transition-none md:pl-8 ${
           open
-            ? "pointer-events-auto translate-x-0 opacity-100 duration-500 delay-700 [clip-path:inset(0_0_0_0)]"
-            : "pointer-events-none -translate-x-[calc(var(--head)/2)] opacity-0 duration-300 delay-0 [clip-path:inset(0_100%_0_0)]"
+            ? "pointer-events-auto translate-x-0 opacity-100 transition-[clip-path,transform,opacity] duration-500 delay-700 [clip-path:inset(0_0_0_0)]"
+            : fading
+              ? "pointer-events-none translate-x-0 opacity-0 transition-opacity duration-300 delay-0 [clip-path:inset(0_0_0_0)]"
+              : "pointer-events-none -translate-x-[calc(var(--head)/2)] opacity-0 transition-none [clip-path:inset(0_100%_0_0)]"
         }`}
         style={{ left: "var(--head)" }}
       >
         {p && (
-          <div className="max-w-2xl">
+          <div>
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="font-display text-2xl font-bold leading-tight tracking-[-0.02em] md:text-3xl">{p.name}</h3>
@@ -614,7 +633,7 @@ export function TeamSection() {
                 <Close className="size-4" weight="bold" />
               </button>
             </div>
-            <p className="mt-4 text-[15px] leading-relaxed text-moss">{p.bio}</p>
+            <p className="mt-4 text-[15px] leading-relaxed text-moss md:text-base">{p.bio}</p>
           </div>
         )}
       </div>
