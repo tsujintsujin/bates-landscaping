@@ -44,6 +44,9 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
+    // Floating buttons (.menu-hide) step aside while the menu is open; see globals.css.
+    if (open) document.documentElement.dataset.menu = "open";
+    else delete document.documentElement.dataset.menu;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
@@ -60,7 +63,11 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 transition-[background-color,color,box-shadow] duration-300 ${
-        light ? "bg-paper/95 text-ink shadow-[0_1px_0_rgb(15_31_23/0.08)] backdrop-blur-md" : "text-white"
+        open
+          ? "bg-forest text-white" // menu open: header joins the menu so nothing behind shows through
+          : light
+            ? "bg-paper/95 text-ink shadow-[0_1px_0_rgb(15_31_23/0.08)] backdrop-blur-md"
+            : "text-white"
       }`}
     >
       <div className="mx-auto grid h-18 max-w-[1440px] grid-cols-[1fr_auto] items-center gap-4 px-4 md:px-8 lg:grid-cols-[1fr_auto_1fr]">
@@ -471,7 +478,7 @@ export function ChatFab() {
       )}
 
       {nudge && bubble && !open && (
-        <div className="fixed bottom-24 right-4 z-50 flex max-w-[250px] origin-bottom-right items-start gap-1 rounded-2xl rounded-br-md bg-white py-3 pl-4 pr-2 text-[15px] text-ink shadow-[0_16px_40px_-12px_rgb(15_31_23/0.4)] ring-1 ring-forest/5 motion-safe:animate-[pop_.3s_var(--ease-out)]">
+        <div className="menu-hide fixed bottom-24 right-4 z-50 flex max-w-[250px] origin-bottom-right items-start gap-1 rounded-2xl rounded-br-md bg-white py-3 pl-4 pr-2 text-[15px] text-ink shadow-[0_16px_40px_-12px_rgb(15_31_23/0.4)] ring-1 ring-forest/5 motion-safe:animate-[pop_.3s_var(--ease-out)]">
           <button onClick={() => { setOpen(true); dismiss(); }} className="text-left">{GREETING}</button>
           <button onClick={dismiss} aria-label="Dismiss" className="grid size-7 shrink-0 place-items-center rounded-full text-moss hover:bg-paper">
             <Close className="size-4" />
@@ -482,7 +489,7 @@ export function ChatFab() {
       <button
         onClick={() => { setOpen(!open); dismiss(); }}
         aria-label={open ? "Close chat" : "Open chat"}
-        className="press fixed bottom-5 right-4 z-50 grid size-14 place-items-center rounded-full bg-red text-white shadow-[0_12px_28px_-8px_rgb(237_28_36/0.55)] hover:bg-red-deep"
+        className="menu-hide press fixed bottom-5 right-4 z-50 grid size-14 place-items-center rounded-full bg-red text-white shadow-[0_12px_28px_-8px_rgb(237_28_36/0.55)] hover:bg-red-deep"
       >
         {open ? <Close className="size-6" weight="bold" /> : <Chat className="size-7" weight="fill" />}
         {nudge && !open && (
@@ -495,6 +502,7 @@ export function ChatFab() {
 
 /* ---------- The team: circles; click = others fade, head slides left, details slide out of the circle ---------- */
 // Sequence (open):  others fade 0-250ms → head slides to the left edge 200-750ms → details slide out 700-1200ms.
+// Phones (< sm, 3 columns): the head slides to the top centre instead and the details reveal downward under it.
 // Sequence (close): details fade out 0-300ms → head slides home 300-850ms → others fade in 750ms+.
 // Clicking anywhere on the details (or Esc, or the close button) runs the close sequence.
 
@@ -512,11 +520,14 @@ export function TeamSection() {
   const closeBtn = useRef<HTMLButtonElement>(null);
   const openSel = useRef<number | null>(null); // who is open right now, for the resize observer
 
-  // Distance from a head's circle to the grid's top-left, from layout offsets (unaffected by the transform itself).
+  // Distance from a head's circle to its target (grid top-left, or top-centre on phones), from layout offsets, which
+  // the transform itself doesn't affect.
   const measure = (i: number) => {
     const b = heads.current[i]!;
     const c = circles.current[i]!;
-    return { x: -(b.offsetLeft + c.offsetLeft), y: -(b.offsetTop + c.offsetTop) };
+    const phone = !matchMedia("(min-width: 640px)").matches;
+    const targetX = phone ? (grid.current!.offsetWidth - c.offsetWidth) / 2 : 0;
+    return { x: targetX - (b.offsetLeft + c.offsetLeft), y: -(b.offsetTop + c.offsetTop) };
   };
 
   // Keep the stage as tall as the grid (and the open panel) so the page doesn't jump, and keep an open head pinned to
@@ -540,7 +551,7 @@ export function TeamSection() {
 
   useEffect(() => {
     if (!open) return;
-    setPanelH(panel.current!.scrollHeight);
+    setPanelH(panel.current!.offsetTop + panel.current!.scrollHeight);
     const t = setTimeout(() => closeBtn.current?.focus({ preventScroll: true }), 700);
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     addEventListener("keydown", onKey);
@@ -569,6 +580,9 @@ export function TeamSection() {
             <li
               key={m.name}
               className={`flex justify-center transition-opacity duration-300 motion-reduce:transition-none ${
+                // a lone last person on a 3-column row sits in the middle column
+                i === TEAM.length - 1 && TEAM.length % 3 === 1 ? "col-start-2 sm:col-start-auto" : ""
+              } ${
                 others ? "pointer-events-none opacity-0 delay-0" : "opacity-100 delay-[750ms]"
               }`}
             >
@@ -608,19 +622,18 @@ export function TeamSection() {
         aria-label={p ? `About ${p.name}` : undefined}
         aria-hidden={!open}
         onClick={open ? close : undefined}
-        className={`absolute right-0 top-0 cursor-pointer pb-2 pl-4 ease-(--ease-out) motion-reduce:transition-none md:pl-8 ${
+        className={`absolute left-0 right-0 top-[calc(var(--head)+1.25rem)] cursor-pointer pb-2 ease-(--ease-out) motion-reduce:transition-none sm:left-(--head) sm:top-0 sm:pl-4 md:pl-8 ${
           open
-            ? "pointer-events-auto translate-x-0 opacity-100 transition-[clip-path,transform,opacity] duration-500 delay-700 [clip-path:inset(0_0_0_0)]"
+            ? "pointer-events-auto translate-0 opacity-100 transition-[clip-path,translate,opacity] duration-500 delay-700 [clip-path:inset(0_0_0_0)]"
             : fading
-              ? "pointer-events-none translate-x-0 opacity-0 transition-opacity duration-300 delay-0 [clip-path:inset(0_0_0_0)]"
-              : "pointer-events-none -translate-x-[calc(var(--head)/2)] opacity-0 transition-none [clip-path:inset(0_100%_0_0)]"
+              ? "pointer-events-none translate-0 opacity-0 transition-opacity duration-300 delay-0 [clip-path:inset(0_0_0_0)]"
+              : "pointer-events-none -translate-y-[calc(var(--head)/2)] opacity-0 transition-none [clip-path:inset(0_0_100%_0)] sm:translate-y-0 sm:-translate-x-[calc(var(--head)/2)] sm:[clip-path:inset(0_100%_0_0)]"
         }`}
-        style={{ left: "var(--head)" }}
       >
         {p && (
           <div>
-            <div className="flex items-start justify-between gap-4">
-              <div>
+            <div className="relative flex items-start justify-center gap-4 sm:justify-between">
+              <div className="text-center sm:text-left">
                 <h3 className="font-display text-2xl font-bold leading-tight tracking-[-0.02em] md:text-3xl">{p.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-red">{p.role}</p>
               </div>
@@ -628,7 +641,7 @@ export function TeamSection() {
                 ref={closeBtn}
                 tabIndex={open ? 0 : -1}
                 aria-label={`Close ${p.name}'s details`}
-                className="press grid size-9 shrink-0 place-items-center rounded-full bg-forest/5 text-ink hover:bg-forest/10"
+                className="press absolute right-0 top-0 grid size-9 shrink-0 place-items-center rounded-full bg-forest/5 text-ink hover:bg-forest/10 sm:static"
               >
                 <Close className="size-4" weight="bold" />
               </button>
@@ -681,7 +694,7 @@ export function ConsentPreferences() {
       <button
         onClick={openPanel}
         aria-label="Consent preferences"
-        className="press fixed bottom-5 left-4 z-40 grid size-12 place-items-center rounded-full bg-forest text-white shadow-[0_10px_24px_-8px_rgb(15_31_23/0.55)] ring-1 ring-white/15 hover:bg-forest-2"
+        className="menu-hide press fixed bottom-5 left-4 z-40 grid size-12 place-items-center rounded-full bg-forest text-white shadow-[0_10px_24px_-8px_rgb(15_31_23/0.55)] ring-1 ring-white/15 hover:bg-forest-2"
       >
         <Cookie className="size-6" />
       </button>

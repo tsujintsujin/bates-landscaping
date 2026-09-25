@@ -153,6 +153,9 @@ All live in `site/components/client.tsx` (client) and `site/app/page.tsx` (marku
 ### Buttons
 - **Primary:** red pill, white 15px semibold text, 12px 20px padding, **no arrow**. Label "Book now" everywhere booking is meant.
 - **Dark:** forest pill, turns red on hover ("View all projects →", "All case studies →" keep an arrow).
+- **Award ribbons** (hero): notched ribbon SVGs, 2024 `#1c5a3a` and 2025 `#2f8a45` (NALP's greens, used only here),
+  white text (NALP / year in Bricolage / AWARDS OF EXCELLENCE / RECIPIENT), faint inner border, soft drop shadow;
+  106px tall on phones, 130px desktop.
 - **Text link with arrow:** no background, semibold, arrow nudges 2px right on hover. Used as the second action next
   to a button ("See our work →" in the hero, "Book now →" in the floating card). Rule from Justin: **one button + one
   text link**, never two buttons side by side.
@@ -199,13 +202,16 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
   details reveal from behind the circle across the full remaining width with `clip-path` + translate (500ms ease-out,
   700ms delay). Clicking the details closes it: the details fade out in place (300ms, Justin's call), then the head
   slides home (550ms after 300ms) and the others fade back in (750ms). Stage height animates to fit the bio. The head's
-  offset comes from layout offsets and is re-measured on resize.
+  offset comes from layout offsets and is re-measured on resize. Below 640px the head moves to the top centre and the
+  details reveal downward (`clip-path` from the top) under it; a lone last head is centred in its row.
 - **FAQ accordion**: native `<details name="faq">` (exclusive), 1px forest/10 dividers, round "+" that rotates into a
   red "×" when open, `::details-content` height animation where supported.
 - **Consent Preferences**: round forest button bottom-left (cookie icon), native `<dialog>` with a blurred forest
   backdrop, categories as `<details>` rows with red switches, footer: "Save my preferences" text link + "Reject all"
   (outlined pill) + "Accept all" (red pill).
-- **History row**: six columns (2 on phones), each a 1px top rule, year in red display type, one line of moss text.
+- **History row**: from `sm`, columns (3, then 6 at `lg`), each a 1px top rule, year in red display type, one line of
+  moss text. On phones, a vertical timeline: one column, a 1px forest/20 line down the left, an 11px red marker (with a
+  paper ring) at each year, so the sequence is obvious without reading.
 - **Chat FAB**: red round button bottom-right. After 3s a "1" badge plus a speech bubble "Hey there, how can we help
   you?"; the bubble hides after 8s, the badge stays until opened (both remembered for the visit in sessionStorage).
   Never auto-opens. Panel shows quick-reply chips (Drainage, Bamboo, Patio / garden, Maintenance, Snow, Something

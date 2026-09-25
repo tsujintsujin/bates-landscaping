@@ -23,6 +23,32 @@ const label = "text-xs font-semibold uppercase tracking-[0.08em] text-white/50";
 const h2 = "font-display text-[clamp(1.9rem,3.6vw,3.25rem)] font-bold leading-[1.04] tracking-[-0.03em]";
 const wrap = "mx-auto max-w-[1180px] px-4 md:px-8 xl:px-0";
 
+/* NALP Awards of Excellence ribbons (their homepage shows the 2024 and 2025 awards above the hero headline; this is
+   our drawn version, without NALP's logo mark). */
+function AwardRibbon({ year, fill }: { year: string; fill: string }) {
+  return (
+    <svg
+      viewBox="0 0 110 140"
+      className="h-[106px] w-auto drop-shadow-[0_8px_14px_rgb(0_0_0/0.35)] md:h-[130px]"
+      role="img"
+      aria-label={`National Association of Landscape Professionals, ${year} Awards of Excellence recipient`}
+    >
+      <path d="M4 0 H106 V136 L55 116 L4 136 Z" fill={fill} />
+      <path d="M10 7 H100 V125 L55 107 L10 125 Z" fill="none" stroke="white" strokeOpacity=".28" strokeWidth="1" />
+      <g fill="white" textAnchor="middle" style={{ fontFamily: "var(--font-asap)" }}>
+        <text x="55" y="23" fontSize="8" fontWeight="600" letterSpacing="1.8" opacity=".85">NALP</text>
+        <path d="M34 30 H76" stroke="white" strokeOpacity=".4" />
+        <text x="55" y="56" fontSize="27" fontWeight="700" style={{ fontFamily: "var(--font-bricolage)" }} letterSpacing="-.5">
+          {year}
+        </text>
+        <text x="55" y="72" fontSize="8.5" letterSpacing=".8">AWARDS OF</text>
+        <text x="55" y="83" fontSize="8.5" letterSpacing=".8">EXCELLENCE</text>
+        <text x="55" y="97" fontSize="8.5" fontWeight="700" letterSpacing="1.4">RECIPIENT</text>
+      </g>
+    </svg>
+  );
+}
+
 /* Thin contour lines, drawn across a whole strip */
 function Contours({ className }: { className: string }) {
   return (
@@ -45,7 +71,11 @@ export default function Home() {
           <HeroVideo />
           <div className="absolute inset-0 bg-[linear-gradient(to_top,rgb(15_31_23/0.9)_0%,rgb(15_31_23/0.5)_50%,rgb(15_31_23/0.4)_100%)]" />
           <div className="relative mx-auto flex min-h-[100dvh] max-w-[1440px] flex-col items-center justify-center px-4 pb-28 pt-20 text-center md:items-start md:px-8 md:pb-48 md:pt-24 md:text-left">
-            <h1 className="rise max-w-[17ch] font-display text-[clamp(2.5rem,5.4vw,5.75rem)] font-bold leading-[0.95] tracking-[-0.035em]">
+            <div className="rise mb-6 flex gap-2 md:mb-7">
+              <AwardRibbon year="2024" fill="#1c5a3a" />
+              <AwardRibbon year="2025" fill="#2f8a45" />
+            </div>
+            <h1 className="rise max-w-[17ch] font-display [animation-delay:60ms] text-[clamp(2.5rem,5.4vw,5.75rem)] font-bold leading-[0.95] tracking-[-0.035em]">
               The best landscape company to work <span className="text-red">WITH</span> and{" "}
               <span className="text-red">FOR</span>
             </h1>
@@ -195,9 +225,14 @@ export default function Home() {
               <Image src={asset("/img/crew.webp")} alt="The Bates Landscaping crew at the yard" fill sizes="(min-width: 768px) 600px, 100vw" className="object-cover" />
             </div>
           </div>
-          <ol className={`${wrap} mt-14 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 md:mt-20 lg:grid-cols-6`}>
+          {/* Phones: a vertical timeline (line + red marker per year) so the order reads without reading.
+              From sm up: a row of columns with a rule above each year. */}
+          <ol
+            className={`${wrap} relative mt-14 grid gap-7 before:absolute before:bottom-2 before:left-[calc(1rem+5px)] before:top-2 before:w-px before:bg-forest/20 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-8 sm:before:hidden md:mt-20 lg:grid-cols-6`}
+          >
             {HISTORY.map(([year, text]) => (
-              <li key={year} className="border-t border-forest/15 pt-4">
+              <li key={year} className="relative pl-8 sm:border-t sm:border-forest/15 sm:pl-0 sm:pt-4">
+                <span className="absolute left-0 top-2 size-2.75 rounded-full bg-red ring-4 ring-paper sm:hidden" aria-hidden />
                 <p className="font-display text-2xl font-bold tracking-[-0.02em] text-red">{year}</p>
                 <p className="mt-1.5 text-sm leading-snug text-moss">{text}</p>
               </li>
@@ -237,7 +272,7 @@ export default function Home() {
             </div>
             <Link
               href="/join-our-team"
-              className="press group inline-flex shrink-0 items-center gap-3 rounded-full bg-red py-1.5 pl-5 pr-1.5 text-[15px] font-semibold hover:bg-red-deep"
+              className="press group inline-flex shrink-0 items-center gap-3 self-end md:self-auto rounded-full bg-red py-1.5 pl-5 pr-1.5 text-[15px] font-semibold hover:bg-red-deep"
             >
               See Careers
               <span className="grid size-9 place-items-center rounded-full bg-white text-forest">
@@ -286,7 +321,7 @@ export default function Home() {
         </section>
 
         {/* 10. Floating card straddling the page/footer seam */}
-        <section className="relative z-10 bg-[linear-gradient(to_bottom,white_calc(50%+2.5rem),var(--color-forest)_calc(50%+2.5rem))] px-4 pt-4 md:bg-[linear-gradient(to_bottom,white_calc(50%+2rem),var(--color-forest)_calc(50%+2rem))] md:px-8">
+        <section className="relative z-10 -mb-px bg-forest px-4 pt-8 md:bg-[linear-gradient(to_bottom,white_calc(50%+2rem),var(--color-forest)_calc(50%+2rem))] md:px-8 md:pt-4">
           <div className="floating relative mx-auto max-w-[1180px] overflow-hidden rounded-3xl bg-[linear-gradient(120deg,#7a0b10_0%,var(--color-red-deep)_45%,var(--color-red)_100%)] p-8 text-white shadow-[0_30px_60px_-20px_rgb(15_31_23/0.55)] md:p-12">
             <svg
               viewBox="0 0 400 300"
@@ -308,10 +343,12 @@ export default function Home() {
                 Discover how our personalized approach to landscaping can benefit your property.
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-4">
-                <OpenChatButton className={`${pill} bg-white text-red-deep hover:bg-paper`}>Ask us</OpenChatButton>
-                <Link href="/book-now" className={`${textLink} text-white hover:text-white/80`}>
-                  Book now <Arrow className={arrowNudge} weight="bold" />
+                <Link href="/book-now" className={`${pill} bg-white text-red-deep hover:bg-paper`}>
+                  Book now
                 </Link>
+                <OpenChatButton className={`${textLink} text-white hover:text-white/80`}>
+                  Ask us <Arrow className={arrowNudge} weight="bold" />
+                </OpenChatButton>
               </div>
             </div>
           </div>

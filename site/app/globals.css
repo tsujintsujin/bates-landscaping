@@ -46,6 +46,11 @@ h3 {
   display: none;
 }
 
+/* Chat and consent buttons step aside while the mobile menu is open */
+:root[data-menu="open"] .menu-hide {
+  display: none;
+}
+
 /* Pressable: every button and pill confirms the press */
 .press {
   transition:
