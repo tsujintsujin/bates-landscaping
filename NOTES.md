@@ -276,3 +276,5 @@ Justin's mapping of Hooper sections → Bates:
   SVG ribbons, green and darker green, above the hero text → `AwardRibbon`, no NALP logo mark. Made taller at his
   request so RECIPIENT isn't tight to the border.
 - Help card: **"Book now" is the button, "Ask us →" the text link** (swapped at his request).
+- Mobile menu: the header stayed transparent over the open menu, so the page showed through the top strip. Now the
+  header turns forest while the menu is open, and the chat/consent buttons hide (they covered the menu's Book now).

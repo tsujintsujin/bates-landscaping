@@ -44,6 +44,9 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
+    // Floating buttons (.menu-hide) step aside while the menu is open; see globals.css.
+    if (open) document.documentElement.dataset.menu = "open";
+    else delete document.documentElement.dataset.menu;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
@@ -60,7 +63,11 @@ export function Header({ overHero = false }: { overHero?: boolean }) {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 transition-[background-color,color,box-shadow] duration-300 ${
-        light ? "bg-paper/95 text-ink shadow-[0_1px_0_rgb(15_31_23/0.08)] backdrop-blur-md" : "text-white"
+        open
+          ? "bg-forest text-white" // menu open: header joins the menu so nothing behind shows through
+          : light
+            ? "bg-paper/95 text-ink shadow-[0_1px_0_rgb(15_31_23/0.08)] backdrop-blur-md"
+            : "text-white"
       }`}
     >
       <div className="mx-auto grid h-18 max-w-[1440px] grid-cols-[1fr_auto] items-center gap-4 px-4 md:px-8 lg:grid-cols-[1fr_auto_1fr]">
@@ -471,7 +478,7 @@ export function ChatFab() {
       )}
 
       {nudge && bubble && !open && (
-        <div className="fixed bottom-24 right-4 z-50 flex max-w-[250px] origin-bottom-right items-start gap-1 rounded-2xl rounded-br-md bg-white py-3 pl-4 pr-2 text-[15px] text-ink shadow-[0_16px_40px_-12px_rgb(15_31_23/0.4)] ring-1 ring-forest/5 motion-safe:animate-[pop_.3s_var(--ease-out)]">
+        <div className="menu-hide fixed bottom-24 right-4 z-50 flex max-w-[250px] origin-bottom-right items-start gap-1 rounded-2xl rounded-br-md bg-white py-3 pl-4 pr-2 text-[15px] text-ink shadow-[0_16px_40px_-12px_rgb(15_31_23/0.4)] ring-1 ring-forest/5 motion-safe:animate-[pop_.3s_var(--ease-out)]">
           <button onClick={() => { setOpen(true); dismiss(); }} className="text-left">{GREETING}</button>
           <button onClick={dismiss} aria-label="Dismiss" className="grid size-7 shrink-0 place-items-center rounded-full text-moss hover:bg-paper">
             <Close className="size-4" />
@@ -482,7 +489,7 @@ export function ChatFab() {
       <button
         onClick={() => { setOpen(!open); dismiss(); }}
         aria-label={open ? "Close chat" : "Open chat"}
-        className="press fixed bottom-5 right-4 z-50 grid size-14 place-items-center rounded-full bg-red text-white shadow-[0_12px_28px_-8px_rgb(237_28_36/0.55)] hover:bg-red-deep"
+        className="menu-hide press fixed bottom-5 right-4 z-50 grid size-14 place-items-center rounded-full bg-red text-white shadow-[0_12px_28px_-8px_rgb(237_28_36/0.55)] hover:bg-red-deep"
       >
         {open ? <Close className="size-6" weight="bold" /> : <Chat className="size-7" weight="fill" />}
         {nudge && !open && (
@@ -687,7 +694,7 @@ export function ConsentPreferences() {
       <button
         onClick={openPanel}
         aria-label="Consent preferences"
-        className="press fixed bottom-5 left-4 z-40 grid size-12 place-items-center rounded-full bg-forest text-white shadow-[0_10px_24px_-8px_rgb(15_31_23/0.55)] ring-1 ring-white/15 hover:bg-forest-2"
+        className="menu-hide press fixed bottom-5 left-4 z-40 grid size-12 place-items-center rounded-full bg-forest text-white shadow-[0_10px_24px_-8px_rgb(15_31_23/0.55)] ring-1 ring-white/15 hover:bg-forest-2"
       >
         <Cookie className="size-6" />
       </button>
