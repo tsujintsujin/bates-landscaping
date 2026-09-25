@@ -1,15 +1,17 @@
 # HANDOFF: Bates Landscaping remodel
 
-Written 2026-09-25, updated the same evening after Justin's third review round. **The homepage is built and live at
-justin94.space/bates; the next session builds the other pages.** This file replaces the planning-session handoff. Read it top to bottom before touching code.
+Written 2026-09-25 at the end of the homepage sessions. **The homepage is finished, approved round by round, and live at
+https://justin94.space/bates. The next session builds the other pages in the same design.** Read this top to bottom
+before touching code; §8 (building the other pages) and §9 (traps) are the parts most likely to save you a rebuild.
 
 Read in this order:
-1. **This file.** Everything decided, everything built, every trap.
-2. **`DESIGN.md`**: the design system as built (tokens, type scale, radii, components, do's and don'ts).
+1. **This file.** Status, how Justin works, what's built and why, how to build the next pages, every trap.
+2. **`DESIGN.md`**: the design system as built (tokens, type scale, radii, components, do's and don'ts). It is the
+   authority on look and motion; the `impeccable` design skill reads it automatically.
 3. **`PRODUCT.md`**: product truth (who, why, constraints, what content exists, what must never be invented).
 4. **`NOTES.md`**: the running decision log with the reasoning and history. **Append to it** every time Justin decides
    something. He discusses piecemeal, jumps between topics, and expects every point noted.
-5. `recon/`: everything captured from the live site. Don't re-crawl; it's all here (inventory in §6).
+5. `recon/`: everything captured from their live site (§6). Don't re-crawl what's already there.
 
 ---
 
@@ -17,124 +19,134 @@ Read in this order:
 
 | Area | State |
 |---|---|
-| Homepage (`site/app/page.tsx`) | Built, reviewed by Justin three times, all feedback applied. Scale confirmed "fine now". |
-| Live | **https://justin94.space/bates** (Portfolio proxies `/bates/*` to the Vercel app, §3). |
-| Design system | Settled and documented in `DESIGN.md`. Reuse it; don't reinvent per page. |
-| Other pages | **Not started.** Internal links go to real paths under `/bates` and 404 until each page exists (§7.1 item 7). |
-| Chat FAB | UI built with canned answers from their FAQs. **No AI backend yet** (§9.2). |
-| Booking | Not built (spec §9.1). `/book-now?service=<key>` is already linked from the chat. |
-| Consent Preferences | Built (button bottom-left + dialog, choice in `localStorage`). |
-| Git / GitHub | Private repo **`tsujintsujin/bates-landscaping`**, default branch `main`; merge to `main` = production deploy. |
-| Dark mode | Not built, not requested. Page is light with dark bands. |
-| Interview sheet | `deliverables/Bates-site-notes.pdf` (source `site-notes.html`), 12 verified findings (§11). |
+| Homepage (`site/app/page.tsx`) | **Done.** Built with `/frontendskills`, then six review rounds from Justin, every point applied and checked at desktop and phone widths down to 320px. |
+| Live | **https://justin94.space/bates** (Portfolio proxies `/bates/*` to the Vercel app, §3). Merges to `main` deploy automatically. |
+| Design system | Settled; documented in `DESIGN.md`. Reuse it on every page. |
+| Other pages | **Not started.** Homepage links point at their real paths under `/bates` and 404 until each page exists (§9 item 7). |
+| Shared shell | Header, footer, chat and consent still live inside `page.tsx`. **Move them to the layout first** (§8.1). |
+| Chat | UI built, canned answers from their FAQs. **No AI backend yet** (§10.2). |
+| Booking | Not built (§10.1). `/book-now?service=<key>` is already linked from the chat. |
+| Consent Preferences | Built (bottom-left button + dialog, choice kept in `localStorage`). |
+| Git | Private repo `tsujintsujin/bates-landscaping`, `main` default. PRs #1-#5 merged. |
+| Interview sheet | `deliverables/Bates-site-notes.pdf`: 12 verified issues on their current site (§12). |
+| Dark mode | Not built, not requested. Light page with dark bands. |
 
 ---
 
-## 1. How Justin works (read this first; it matters more than the spec)
+## 1. How Justin works (read first; it matters more than the spec)
 
 These come from friction in the sessions so far. Getting them wrong costs his trust fast.
 
-1. **"Discuss" / "check with me" / "thoughts?" means answer in chat. Don't build.** No files, no scaffolding, no crawling
-   until he says go. Building when he asked to talk is the #1 thing that angered him.
-2. **Don't invoke skills he didn't name.** Never run `/site-rebuild` on your own. The design skills (`impeccable`,
-   `emil-design-eng`, `design-taste-frontend`, or all three via `/frontendskills`) are what he wants for design work, and
-   he invoked `/frontendskills` for the homepage. For new pages, **offer** them; run them when he says.
-3. **When he names a reference site, open it in Chrome and study it before giving opinions.** He shows references and
-   expects them studied. Measure (font sizes, card sizes, borders) with `javascript_tool`; don't eyeball.
-4. **Recommend, don't survey.** One recommendation with a short why. When he pushes back, check whether he's right and
-   say so plainly if he is.
+1. **"Discuss" / "check with me" / "thoughts?" / "or do you have other suggestion?" means answer in chat first.** When
+   he asks a question, answer it; when he gives an instruction, do it. Building when he asked to talk angered him most.
+2. **Don't invoke skills he didn't name.** Never run `/site-rebuild` (its flow contradicts his decisions). The design
+   skills (`impeccable`, `emil-design-eng`, `design-taste-frontend`, or all three via `/frontendskills`) are what he
+   wants for design work. For a new page, **offer** them; run them when he says. If you run them, don't skip their
+   comp/review steps and then claim you used them (§1.5).
+3. **When he names a reference site, open it in Chrome and study it before giving opinions.** Measure font sizes, card
+   sizes and borders with `javascript_tool`; don't eyeball. Take a reference's **structure and motion**, never its look.
+4. **Recommend, don't survey.** One recommendation with a short why. When he pushes back ("isn't that what they already
+   have?", "why is Justin 4th?"), check whether he's right and say so plainly if he is.
 5. **Own your calls.** Don't blame rules or tools. When he asked "is this using design skills? why is everything so
-   big?", the honest answer (I skipped the skills' comp and review steps, and copied Hooper's big-type numbers) was right.
-6. **He trims and edits media himself** (OpenCut for video, image edits). Don't regenerate assets he said are his
-   (the hero video; the Khyss and Juliana headshots).
+   big?", the honest answer (skills loaded but their comp and review steps skipped; Hooper's big-type numbers copied)
+   was the right one.
+6. **He edits media himself** (OpenCut for video, image retouching). Don't regenerate assets he said are his (the hero
+   video; Khyss and Juliana's headshots).
 7. **Plain language.** Short tables and bullets. No jargon.
-8. **He reviews visually and finds problems within minutes.** He sends numbered lists of fixes. Apply all of them, check
-   each one in the browser at desktop and phone width, and report per number.
-9. **He dislikes things that look oversized.** Twice now "everything is too big". Default to the smaller option.
+8. **He reviews visually, fast, and on small phones.** He sends numbered lists of fixes, often mid-task, with
+   screenshots. He views pages through a Chrome **mobile-simulator extension** (a phone frame) and at Windows display
+   scaling. Apply every point, check each at desktop **and** phone widths (390 and 320), and report per number.
+9. **Taste record** (what he approved or rejected; follow it on new pages):
+   - Smaller over bigger. Early versions were "too big"; the current scale is confirmed fine.
+   - **One button + one text link** with an arrow, never two buttons side by side. Buttons for primary actions have no
+     arrow; "Book now" is the label for booking everywhere.
+   - Motion he likes: Hooper-style word-fill headlines, an endless marquee that **never pauses**, a looping slider, the
+     team click sequence, gentle bob. Motion he dislikes: smooth-scroll libraries, anything laggy or scroll-jacking.
+   - Hand-drawn doodles looked bad: rejected. Prefer clean structural cues (e.g. the vertical timeline on phones).
+   - Content must be **real and ordered sensibly** (he caught the founder listed 4th). Order people by role.
+   - On phones: centre what's centred, cover the page fully with overlays (menu), no stray lines or strips.
+   - Their own wording where it exists ("We're here to help!"), shortened only where needed.
 
 Global rules from his `CLAUDE.md` (auto-loaded, summarised):
-- **Git:** never edit on `main`. Branch first (`claude/<topic>`), then when the task is fully done: gates green → audit
-  staged files for secrets → commit → push → `gh pr create` → `gh pr merge --merge --delete-branch`. Do it yourself,
-  don't ask "should I commit?". One task, one PR.
-- **Browser testing = Claude in Chrome (`mcp__claude-in-chrome__*`) only.** The built-in Browser pane is only for
-  `preview_start` to launch the dev server. Every user-facing change is checked at desktop **and ~390px phone width**,
-  with screenshots sent via `SendUserFile`. No screenshot = "built, not checked". See §8 for how to actually get valid
-  screenshots here (it's not straightforward).
+- **Git:** never edit on `main`. `git switch -c claude/<topic>` first. When a task is fully done: gates green → audit
+  staged files for secrets → commit → push → `gh pr create` → `gh pr merge --merge --delete-branch` → watch the Vercel
+  production deploy → check the live page. Do it yourself; don't ask "should I commit?". One task, one PR.
+- **Browser testing = Claude in Chrome (`mcp__claude-in-chrome__*`).** The built-in Browser pane is only for
+  `preview_start` to launch the dev server. No screenshot = "built, not checked". §7 explains how to get valid
+  screenshots in this setup (it isn't straightforward).
 - **Run commands yourself**; never hand him commands to paste (UAC elevation is the only exception).
 - **Credentials** live in `D:\AIO Freelance\Credentials\` (index `README.md`). Never copy a secret value into the repo,
-  a log, a doc or chat. Refer to it by its README name.
+  a log, a doc or chat.
 
 ---
 
 ## 2. Purpose
 
-- **A demo for a job application.** Justin (the builder, Justin Masiga) is applying to work at Bates Landscaping and uses
-  this remodel to get a foot in the door. Not a sold client build. **Zero cost** (free tiers only).
+- **A demo for a job application.** Justin Masiga (the builder) is applying to work at Bates Landscaping and uses this
+  remodel to get a foot in the door. Not a sold client build. **Zero cost** (free tiers only).
 - It must make two points in an interview: *"I understand your business"* and *"I can build what you need."* Real Bates
-  content and brand, clearly better than the current site, plus working features it lacks (chatbot, real booking email).
-- **Modern remodel, NOT the same layout and look** as the current site. Justin was explicit.
-- The footer says "Concept remodel, not the official site." and the site is `noindex`. Keep both.
+  content and brand, clearly better than the current site, plus working features it lacks (chatbot, booking email).
+- **Modern remodel, NOT the same layout and look** as their current site.
+- The footer says "Concept remodel, not the official site." and every page is `noindex` (set in the root layout). Keep both.
 
 ---
 
-## 3. Repo, running it, checks
+## 3. Repo, running, deploying, checks
 
 ### Where things are
 - Local: `D:\AIO Freelance\Freelance\Pitch\Bates\` (git root). App in `site/`. Recon in `recon/`. Tools in `tools/`.
-- GitHub: **https://github.com/tsujintsujin/bates-landscaping** (private). `main` is the default branch; the homepage was
-  merged via PR from `claude/homepage`.
+- GitHub: **https://github.com/tsujintsujin/bates-landscaping** (private), default branch `main`.
 - `.claude/skills` and `.claude/commands` in the Bates folder are **Windows junctions** to `D:\AIO Freelance\.claude\`
-  (so the workspace skills load when Bates is the git root). They are gitignored. Don't delete them; don't commit them.
-  If a fresh clone lacks them and the design skills don't show up, recreate with
-  `cmd /c mklink /J .claude\skills "D:\AIO Freelance\.claude\skills"` (and the same for `commands`).
+  so the workspace skills load when Bates is the git root. Gitignored. Don't delete or commit them. If a fresh clone
+  lacks them: `cmd /c mklink /J .claude\skills "D:\AIO Freelance\.claude\skills"` (same for `commands`).
 
-### Running
-- Dev server: **port 3012**. `.claude/launch.json` has config `"bates"` (`npm --prefix site run dev -- -p 3012`).
-  Start it with `mcp__Claude_Browser__preview_start {name: "bates"}`, then open **`http://localhost:3012/bates`** in real
-  Chrome. The whole app lives under the `/bates` base path; `http://localhost:3012/` is a 404.
-- Changing `site/next.config.ts` needs a server restart (`preview_stop` then `preview_start`).
-- If `preview_start` says port 3012 is held by another chat's server, check whether it actually responds
-  (`curl http://localhost:3012/bates`). An earlier chat's server died silently once; when the port is free, start it again.
+### Running locally
+- Dev server on **port 3012**: `.claude/launch.json` config `"bates"` (`npm --prefix site run dev -- -p 3012`).
+  Start with `mcp__Claude_Browser__preview_start {name: "bates"}`, then open **`http://localhost:3012/bates`** in real
+  Chrome. The app lives under the `/bates` base path, so `http://localhost:3012/` is a 404.
+- Changing `site/next.config.ts` needs a restart (`preview_stop` then `preview_start`).
+- If `preview_start` says 3012 is held by another chat's server, check it responds (`curl http://localhost:3012/bates`);
+  one died silently before. First request after start compiles for 30-60s; wait for a 200 before opening Chrome.
 - Port 3000 may be taken by Justin's local OpenCut. Don't use it.
-- The first request after start compiles for ~30-60s; a Chrome tab opened too early shows an error page. Wait for
-  `curl` to return 200, then navigate.
-- The Next.js dev "N" badge is turned off (`devIndicators: false`) because it covered the Consent button.
+- The Next.js dev "N" badge is off (`devIndicators: false`); it covered the Consent button.
 
 ### Deploy (live)
 - **Vercel project `bates-landscaping`** (team `tsujintsujins-projects`), connected to the GitHub repo, **Root Directory
-  `site`**, framework Next.js, production branch `main`. Every merge to `main` deploys production; branch pushes get
-  preview deployments. The repo root has `.vercel/project.json` (gitignored) from `vercel link`, and `vercel link` also
-  wrote a `.env.local` with a short-lived OIDC token (gitignored; never commit it).
-- Production app URL: **https://bates-landscaping.vercel.app/bates** (public). Per-deployment URLs
-  (`bates-landscaping-<hash>-tsujintsujins-projects.vercel.app`) sit behind Vercel's login (deployment protection
-  "all except custom domains"), which is expected; the production alias and justin94.space are public.
-- **justin94.space/bates** works through the **Portfolio** project (`D:\AIO Freelance\Portfolio`, repo
-  `tsujintsujin/portfolio`): its `next.config.ts` `rewrites()` maps `/bates` and `/bates/:path*` to the Vercel app. New
-  pages need no Portfolio change (`/bates/:path*` covers them).
-- `basePath` is `"/bates"` from `site/lib/base.ts` (`BASE`), imported by `next.config.ts`. See §7.1 item 1 for what that
-  means when writing links and image paths.
-- Vercel's CLI is logged in as `tsujintsujin`. Its token lives in `%APPDATA%\xdg.data\com.vercel.cli\auth.json`; it was
-  used once to set the Root Directory through the Vercel API. Never copy it anywhere.
+  `site`**, framework Next.js, production branch `main`. Merge to `main` = production deploy (~1 min). Branch pushes get
+  protected preview deployments.
+- Production app: **https://bates-landscaping.vercel.app/bates** (public). Per-deployment URLs sit behind Vercel's login
+  (deployment protection "all except custom domains"); that's expected.
+- **justin94.space/bates** is served by the **Portfolio** project (`D:\AIO Freelance\Portfolio`, repo
+  `tsujintsujin/portfolio`, branch `master`): its `next.config.ts` `rewrites()` maps `/bates` and `/bates/:path*` to the
+  Vercel app. **New pages need no Portfolio change.** Its catch-all CSP (`default-src 'self'`, `img-src 'self' data:`)
+  covers this app because everything loads same-origin through the proxy. If a page ever needs an external script,
+  image host, iframe (e.g. a map) or API from the browser, add a `/bates/:path*` headers block in the Portfolio config,
+  like the existing `/surge` and `/aqua` blocks.
+- `basePath` is `"/bates"` (from `site/lib/base.ts`). See §9 item 1.
+- Checking a deploy: the Vercel CLI is logged in as `tsujintsujin`; its token is in
+  `%APPDATA%\xdg.data\com.vercel.cli\auth.json` (read it into a shell variable only; never print or copy it).
+  `GET https://api.vercel.com/v6/deployments?projectId=prj_lXTCBO4GPosCCzVm6GSrwenjdy7s&teamId=team_36a0KyuushhQDJkVDAtq4tnz&target=production&limit=1`
+  shows the latest production deploy's state and commit.
+- `vercel link` left `.vercel/project.json` and a `.env.local` (short-lived OIDC token) at the repo root. Both gitignored.
 
-### Stack and versions
-- Next.js **16.3.6** (App Router), React 19.2.8, TypeScript, Tailwind CSS **v4** (`@tailwindcss/postcss`, tokens in
-  `@theme` in `site/app/globals.css`), GSAP 3.15 (ScrollTrigger only), `@phosphor-icons/react` 2.1. Node 24.
-- **Next 16 is newer than your training data.** `site/AGENTS.md` says read `site/node_modules/next/dist/docs/` before
-  writing Next-specific code. `next dev` rewrites `site/AGENTS.md` / `site/CLAUDE.md`; commit whatever it writes.
-- Fonts via `next/font/google` in `site/app/layout.tsx`: `Bricolage_Grotesque` (axes opsz, wdth) → `--font-bricolage`,
+### Stack
+- Next.js **16.3.6** (App Router), React 19.2.8, TypeScript, Tailwind CSS **v4** (tokens in `@theme` in
+  `site/app/globals.css`), GSAP 3.15 (ScrollTrigger only, used by `WordFill`), `@phosphor-icons/react` 2.1, Node 24.
+- **Next 16 is newer than your training data.** Read `site/node_modules/next/dist/docs/` before writing Next-specific
+  code (`site/AGENTS.md` says so). `next dev` rewrites `site/AGENTS.md` / `site/CLAUDE.md`; commit whatever it writes.
+- Fonts via `next/font/google` in `site/app/layout.tsx`: `Bricolage_Grotesque` (opsz, wdth) → `--font-bricolage`;
   `Asap` → `--font-asap`.
-- `LayoutProps<"/">` in `layout.tsx` is Next 16's global route type. Fine as is.
 
-### Checks (all passed at handoff)
+### Gates (all pass on `main`)
 ```
 cd site
 npx tsc --noEmit
 npx eslint app components lib
 npx next build
-node "D:/AIO Freelance/.claude/skills/impeccable/scripts/detect.mjs" --json app/page.tsx components/client.tsx app/globals.css
+node "D:/AIO Freelance/.claude/skills/impeccable/scripts/detect.mjs" --json <changed .tsx/.css files>
 ```
-The last one is the impeccable design detector; it returned `[]` (no findings). RTK rewrites some commands and
-summarises their output; prefix `rtk proxy` (e.g. `rtk proxy npx eslint ...`) to see the full lint output.
+The last is the impeccable design detector; it returns `[]` on the homepage. RTK rewrites shell commands and
+summarises output; prefix `rtk proxy` to see full output (e.g. `rtk proxy npx eslint app components lib`).
 
 ---
 
@@ -142,34 +154,32 @@ summarises their output; prefix `rtk proxy` (e.g. `rtk proxy npx eslint ...`) to
 
 ```
 Bates/
-  HANDOFF.md        this file
-  DESIGN.md         design system as built (impeccable reads it)
-  PRODUCT.md        product truth (impeccable reads it)
-  NOTES.md          decision log, append-only
-  CLAUDE.md         short pointer to the above (auto-loads)
-  .claude/launch.json   dev server config "bates", port 3012
-  tools/shots.mjs   headless Chrome screenshots at 1440 and 390 (see §8)
-  deliverables/     Bates-site-notes.pdf + site-notes.html (the "what I found" sheet for the interview)
-  recon/            captured live-site content (§6)
+  HANDOFF.md  DESIGN.md  PRODUCT.md  NOTES.md  CLAUDE.md
+  .claude/launch.json     dev server config "bates", port 3012
+  tools/shots.mjs         headless Chrome screenshots at 1440 and 390 (§7)
+  deliverables/           Bates-site-notes.pdf + site-notes.html (the interview sheet)
+  recon/                  captured live-site content (§6)
   site/
-    next.config.ts      basePath "/bates" (from lib/base.ts), devIndicators off
-    app/layout.tsx      fonts, metadata (title, description, robots noindex)
-    app/icon.svg        favicon = traced Bates "B" mark
-    app/page.tsx        the homepage markup (server component) incl. footer
-    app/globals.css     Tailwind v4 @theme tokens, .press, .rise, .floating, marquee keyframes, services panels
-                        (.svc*), FAQ open animation (.faq)
-    components/client.tsx  all client components: SmartLink, Header, HeroVideo, WordFill, GalleryMarquee,
-                        CaseCarousel, ChatFab, OpenChatButton, TeamSection, ConsentPreferences
-    components/icons.tsx   Phosphor re-exports under local names (Arrow, Phone, Mail, Menu, Close, Cookie, Plus, ...)
-    lib/base.ts         BASE = "/bates" and asset() for /public paths
-    lib/content.ts      PHONE, EMAIL, ADDRESS, SOCIALS, NAV, GALLERY, CASES, SERVICES, HISTORY, TEAM, FAQS, CHIPS
-    public/img/         web-ready images: g-* gallery, c-* case studies, s-snow, crew, team/*.webp (480px squares),
-                        logo.svg (traced), logo.webp (old raster, unused), aoe-2024.webp (NALP badge)
-    public/media/       hero.webm, hero.mp4, hero-poster.webp
+    next.config.ts        basePath "/bates" (from lib/base.ts), devIndicators off
+    app/layout.tsx        fonts, metadata (title, description, robots noindex)
+    app/icon.svg          favicon = traced Bates "B" mark
+    app/page.tsx          the homepage (server component), incl. footer and help card; also defines AwardRibbon,
+                          Contours and the class-string constants pill / textLink / arrowNudge / label / h2 / wrap
+    app/globals.css       Tailwind @theme tokens; .press .rise .floating; marquee keyframes; .svc* services panels;
+                          .faq open animation; .menu-hide rule
+    components/client.tsx client components: SmartLink, Header, HeroVideo, WordFill, GalleryMarquee, CaseCarousel,
+                          ChatFab, OpenChatButton, TeamSection, ConsentPreferences
+    components/icons.tsx  Phosphor re-exports under local names (Arrow, ArrowLeft, ArrowUpRight, Phone, Mail, Menu,
+                          Close, Chevron, Chat, Cookie, Plus, FacebookLogo, InstagramLogo, LinkedinLogo)
+    lib/base.ts           BASE = "/bates" and asset() for /public paths
+    lib/content.ts        PHONE, PHONE_HREF, EMAIL, ADDRESS, SOCIALS, NAV, GALLERY, CASES, SERVICES, HISTORY, TEAM, FAQS, CHIPS
+    public/img/           g-* gallery, c-* case studies, s-snow, crew, team/*.webp (480px squares), logo.svg (traced),
+                          aoe-2024.webp (NALP badge, footer), logo.webp (old raster, unused)
+    public/media/         hero.webm, hero.mp4, hero-poster.webp
 ```
 
-Images were converted with Python + Pillow (WebP). ffmpeg is installed (winget, user scope) for video. `vtracer`
-(pip) traced the logo: red and grey layers separately from the 1044x275 original, recoloured to exact #ED1C24 / #585858.
+Image conversion: Python + Pillow to WebP. ffmpeg is installed (winget, user scope) for video. `vtracer` (pip) traced
+the logo (red and grey layers separately from the 1044x275 original, recoloured to exact #ED1C24 / #585858).
 
 ---
 
@@ -181,38 +191,38 @@ Images were converted with Python + Pillow (WebP). ffmpeg is installed (winget, 
 | Tagline | "The best Landscape company to work WITH and FOR" |
 | Claim | "One of the highest rated companies to work with and for in Southeastern PA" |
 | History | Justin Bates learned the trade from his father in 2002; company started 2009 (mother's garage); incorporated 2011; West Chester office 2017; drainage team 2018; Phoenixville location 2022 |
-| Address | 705 St Marys St, Phoenixville, PA 19460 (footer). Also West Chester and Phoenixville location pages. |
-| Phone | **(484) 443-8772**, the number on their truck. **Decided by Justin** over the footer's (484) 887-8678. In `lib/content.ts` as `PHONE` / `PHONE_HREF`. |
-| Email | `info@bateslandscaping.net` (**.net**; the only address anywhere on their site, which is .co) |
-| Hours | **Not on their site. Don't invent them.** |
-| Service area | Chester, Delaware and Montgomery Counties, PA (snow also covers the Philadelphia Airport area). Towns include Chester Springs, Kennett Square, Paoli, Media, Phoenixville, Downingtown, Bryn Mawr, Wayne, West Chester, Malvern, King of Prussia, plus about 20 more on `/all-services/` (**not captured**) |
-| Award | NALP (National Association of Landscape Professionals) 2024 Awards of Excellence Winner ("AOE 2024" badge in their footer). On our footer too (`public/img/aoe-2024.webp`). |
+| Awards | **NALP (National Association of Landscape Professionals) Awards of Excellence: 2024 and 2025 recipient.** Their homepage shows both above the hero (`recon/brand/nalp-2024-2025.png`); their footer shows the 2024 badge (`recon/brand/aoe2024winner.png`). |
+| Address | 705 St Marys St, Phoenixville, PA 19460. Also West Chester and Phoenixville location pages. |
+| Phone | **(484) 443-8772** (the number on their trucks; **decided by Justin** over the site's (484) 887-8678). `PHONE` / `PHONE_HREF`. |
+| Email | `info@bateslandscaping.net` (.net, while the site is .co; the only address anywhere) |
+| Hours | **Not published. Don't invent them.** |
+| Service area | Chester, Delaware and Montgomery Counties, PA (snow also covers the Philadelphia Airport area). Towns include Chester Springs, Kennett Square, Paoli, Media, Phoenixville, Downingtown, Bryn Mawr, Wayne, West Chester, Malvern, King of Prussia, plus ~20 more on `/all-services/` (**not captured**) |
 | Socials | facebook.com/BatesLandscapingPa, instagram.com/bateslandscapingltd, linkedin.com/company/bates-landscaping-ltd |
 | Clients | Homeowners, property managers, HOAs, apartment communities, engineers, senior living, offices, churches and cemeteries |
-| Services | Installation & design; maintenance (residential = "Estate Maintenance"); hardscaping; drainage/stormwater; bamboo remediation; snow + ice (**commercial/HOA only**, not homeowners) |
+| Services | Installation & design; maintenance (residential = "Estate Maintenance"); hardscaping; drainage/stormwater; bamboo remediation; snow + ice (**commercial/HOA only**, never homeowners) |
 | Not offered (FAQ) | Concrete, firewood, mulch delivery, tree work over ~15 ft |
 | Booking today | Calendly embed on `/book-now/`: choose service, 30-min intake call, email 3-5 property photos |
-| Careers | 8 open roles, benefits list, English + Spanish applications (employee and subcontractor), Trainual staff login |
+| Careers | 8 open roles, benefits, English + Spanish applications (employee and subcontractor), Trainual staff login |
 | Client portal | "Track My Project" → https://portal.golmn.com/ (external) |
 
-### Their real URLs (live menu, checked 2026-09-25). Our `NAV` uses these paths.
-| Label | Path |
+### Their real page URLs (live menu, checked 2026-09-25). Build our pages at the same paths (under `/bates`).
+| Page | Path |
 |---|---|
-| About Us | `/about-us/` (submenu item "The Bates Difference and Down..." → `/design/`) |
-| Services (all) | `/all-services/` |
-| Commercial Landscaping | `/commercial-landscaping-services/` |
+| About Us | `/about-us/` (its submenu "The Bates Difference..." → `/design/`) |
+| All services | `/all-services/` |
+| Commercial landing | `/commercial-landscaping-services/` |
 | Commercial: Installation & Design / Maintenance / Drainage / Bamboo / Snow + Ice | `/commercial-landscaping-installation-design/`, `/commercial-maintenance/`, `/commercial-drainage/`, `/bamboo-remediation/`, `/snow-ice-removal-west-chester/` |
-| Residential Landscaping | `/residential-landscaping-services/` |
+| Residential landing | `/residential-landscaping-services/` |
 | Residential: Installation & Design / Estate Maintenance / Drainage | `/design/`, `/maintain/`, `/drainage-solutions/` |
-| Portfolio | `/project-gallery/` (also a duplicate `/project-gallery-tabs/`), `/case-studies/` |
-| Career Center | `/career-center/`, `/join-our-team/`, Trainual login `https://bates-landscaping.trainualapp.com/users/sign_in` (external) |
-| Book Now / Request a Quote | `/book-now`, `/request-a-quote/` (effectively the same page) |
+| Project Gallery | `/project-gallery/` (their duplicate `/project-gallery-tabs/` needn't be built) |
+| Case Studies | `/case-studies/`; each case study at **`/portfolio-posts/<slug>/`** (slugs in §6) |
+| Careers | `/career-center/`, `/join-our-team/`; Trainual login is external |
+| Book Now / Request a Quote | `/book-now`, `/request-a-quote/` (the same thing on their site) |
 | Locations | `/west-chester/`, `/phoenixville/` |
-| Legal | `/terms-and-conditions/`, `/sms-terms-condition/`, `/sitemap/` |
+| Legal | `/terms-and-conditions/`, `/sms-terms-condition/`, `/sitemap/`; our footer links `/privacy-policy`, which **doesn't exist on their site** (their "Privacy Policy" link opens the SMS terms) |
 
-Notes: on their site Residential's menu has no Bamboo entry; ours lists Bamboo under both (same page, `/bamboo-remediation`).
-`/design/` doubles as "The Bates Difference" and Residential Installation & Design. Our footer's "Privacy Policy" links to
-`/privacy-policy`, which **doesn't exist on their site** (theirs points at SMS terms, an upstream bug; see §11).
+Their Residential menu has no Bamboo entry; ours lists Bamboo under both (same page). `/design/` doubles as "The Bates
+Difference" and Residential Installation & Design.
 
 ---
 
@@ -220,17 +230,17 @@ Notes: on their site Residential's menu has no Bamboo entry; ours lists Bamboo u
 
 | Path | Contents |
 |---|---|
-| `recon/hero-video.webm` | Hero footage **trimmed by Justin in OpenCut**. 21.5s, 1920x1080, 25.3 MB. The web copies in `site/public/media/` are re-encoded (~4 MB each) **and cropped** (`crop=iw*0.89:ih*0.85:0:0`) to remove a pink "B" logo burned into the bottom-right corner. Use no other video. |
+| `recon/hero-video.webm` | Hero footage **trimmed by Justin in OpenCut** (21.5s, 1920x1080, 25 MB). Web copies in `site/public/media/` are re-encoded (~4 MB) **and cropped** (`crop=iw*0.89:ih*0.85:0:0`) to remove a burned-in logo. Use no other video. |
 | `recon/home-copy.md` | Their homepage copy, verbatim, in page order (their HTML repeats headings; that's their markup). |
-| `recon/faq.md` | 55 FAQs verbatim: homepage 31, residential 9, commercial 15. |
-| `recon/case-studies.json` + `recon/case-studies/` | **16 case studies**, keys `url, title, text, images, local`. `text` is sometimes a list of paragraphs; join it. Up to 3 images each, downloaded. ⚠ Some of the 3 images belong to the "similar projects" sidebar, not the job itself; check visually before pairing. |
-| `recon/portfolio/` + `manifest.json` | 20 of the 24 photos on `/project-gallery/`. Manifest maps file → source URL → `caption` (their title where one exists, `null` otherwise). |
-| `recon/team.json` + `recon/team/` | 10 team members: name, position, full bio, headshot. |
-| `recon/brand/` | Logo originals: `bates-logo-original.png` (**1044x275**, the largest that exists), `-1024x270`, `-300x79`, `-e1.webp` (250x66); square mark `bates-mark-original.png` (512) and `-270`. **Traced SVGs: `bates-logo.svg`, `bates-mark.svg`.** NALP badge `aoe2024winner.png` (1665x601). |
-| `recon/services/` | **Their service and landing pages' text, verbatim**: 10 pages (the 8 service paths in §5 + the Commercial and Residential landing pages), captured 2026-09-25, one `.md` per URL slug. `recon/services/img/` has 6 of their snow + ice photos. |
+| `recon/faq.md` | **55 FAQs verbatim**: homepage 31, residential 9, commercial 15. |
+| `recon/services/<slug>.md` | **Their service and landing pages' text, verbatim**: the 8 service paths + Commercial and Residential landing pages (10 files). `recon/services/img/` has 6 of their snow + ice photos. |
+| `recon/case-studies.json` + `recon/case-studies/` | **16 case studies** (keys `url, title, text, images, local`; `text` is sometimes a list, join it). Up to 3 images each. ⚠ Some images belong to the "similar projects" sidebar, not the job; check visually before pairing. |
+| `recon/portfolio/` + `manifest.json` | 20 of the 24 photos on `/project-gallery/`. Manifest: file → source URL → `caption` (their title, or `null`; 12 of 20 are null). |
+| `recon/team.json` + `recon/team/` | 10 team members: name, position, full bio, headshot (originals). |
+| `recon/brand/` | Logo originals (`bates-logo-original.png` 1044x275 is the largest that exists; `bates-mark-original.png` 512); **traced SVGs `bates-logo.svg`, `bates-mark.svg`**; NALP badges `aoe2024winner.png`, `nalp-2024-2025.png`. |
 
 ### The 16 case studies (all distinct jobs; several share a title)
-| # | URL slug | County | Price range |
+| # | Slug (`/portfolio-posts/<slug>/`) | County | Price range |
 |---|---|---|---|
 | 1 | 55-community-property-maintenance-snow-ice-management | Delaware | none given |
 | 2 | irregular-natural-flagstone-reinstall | Delaware | $22,000-$28,000 |
@@ -249,223 +259,212 @@ Notes: on their site Residential's menu has no Bamboo entry; ours lists Bamboo u
 | 15 | drainage-issue-water-in-home | Chester | $45K-$50K+ |
 | 16 | city-oasis | none given | none given |
 
-The homepage carousel uses **8** of them (`CASES` in `lib/content.ts`): the ones whose photo clearly shows that job. Titles
-there drop the " - Bates Landscaping" suffix. Prices use a plain hyphen (no en dashes, see DESIGN.md).
+The homepage slider uses 8 of them (`CASES` in `lib/content.ts`), the ones whose photo clearly shows that job. Titles
+drop the " - Bates Landscaping" suffix; prices use a plain hyphen.
 
-### Team (from `team.json`)
-Megan (Area Manager est 2015), Dylan (Partner + VP of Operations est 2013), Melissa (Business Developer est 2014),
-Justin (Partner + General Manager est 2009), Angel (Shop Supervisor est 2018), Enrique (Supervisor est 2011), Cailee
-(Office Manager), Khyss (Human Resources Administrator est 2024), Molly (Production Manager est 2024), Juliana (Sales
-Assistant est 2025).
-- Megan: card says "Area Manager est 2015", her page bio says Account Manager. Card used as-is.
-- **Khyss and Juliana** headshots don't match the others (the rest: red Bates tops, dark grey studio backdrop, smiling).
-  **Justin is retouching those two himself.** Use the current files until he drops in new ones. Don't generate replacements.
-  (A Hugging Face attempt earlier hit the ZeroGPU daily quota; that route is dropped.)
-- About-page videos "Meet Ramon" and "Meet Nerly Garcia" feature people not on the team list.
-- Other Bates videos exist on their server (sizes by HEAD): Hardscaping.webm (76 MB), SpringCleanUp (56 MB),
-  BambooRemoval (187 MB), Meet_Angel (91 MB), Meet_Ramon (124 MB), Meet_Nerly_Garcia (134 MB), under
-  `bateslandscaping.co/wp-content/uploads/2023/03/` or `/2024/04/`. Not downloaded. `meet-bates-landscaping` (their
-  homepage video) was **ruled out by Justin**.
+### Team (`TEAM` in `lib/content.ts`, in this order)
+Justin (Partner + General Manager est 2009, the founder), Dylan (Partner + VP of Operations est 2013), Megan (Area
+Manager est 2015), Molly (Production Manager est 2024), Cailee (Office Manager), Melissa (Business Developer est 2014),
+Khyss (Human Resources Administrator est 2024), Enrique (Supervisor est 2011, first employee), Angel (Shop Supervisor est
+2018), Juliana (Sales Assistant est 2025). **Ordered by role** (Justin asked why the founder was 4th; their own page's
+order was used before). Bios verbatim.
+- Megan's card says "Area Manager est 2015"; her page bio says Account Manager. Card used as-is.
+- **Khyss and Juliana's headshots are being retouched by Justin** (to match the others: red Bates tops, dark grey
+  backdrop). Swap them into `site/public/img/team/` as 480px WebP squares when he sends them. Don't generate replacements.
+- About-page videos "Meet Ramon" and "Meet Nerly Garcia" feature people not on the team list. Their other videos
+  (Hardscaping 76 MB, SpringCleanUp 56 MB, BambooRemoval 187 MB, Meet_Angel 91 MB, Meet_Ramon 124 MB,
+  Meet_Nerly_Garcia 134 MB) are under `bateslandscaping.co/wp-content/uploads/2023/03/` or `/2024/04/`, not downloaded.
+  Their homepage video was **ruled out by Justin**.
 
-Heavy originals, if you ever use them: `portfolio/16-untitled-design-76.png` (6.8 MB), `case-studies/06-0` and `07-0`
-`daiva-k.png` (7.6 MB each), `portfolio/19-123.jpeg` (2.3 MB), `team/01-megan.jpg` (2.2 MB). Always convert to WebP
-into `site/public/img/` first.
+Heavy originals (always convert to WebP into `site/public/img/` first): `portfolio/16-untitled-design-76.png` (6.8 MB),
+`case-studies/06-0` / `07-0` `daiva-k.png` (7.6 MB each), `portfolio/19-123.jpeg`, `team/01-megan.jpg` (2+ MB).
 
 ---
 
-## 7. The homepage as built (top to bottom)
+## 7. How to verify in this setup (hard-won; read before your first screenshot)
 
-Main reference: **https://www.hooper-services.co.uk/**. Take its **structure and motion**, never its look (Hooper is
-green/cream/yellow/blue; Bates is red + forest). Bottom card reference: **https://www.pocketdevs.ph/**.
+Justin's rule: nothing user-facing is "done" without screenshots at desktop and phone width, sent via `SendUserFile`.
 
-| # | Section | What it is | Justin's decisions / history |
-|---|---|---|---|
-| Header | `Header` | Transparent over hero, solid after. Traced SVG logo. Nav centred on the page (grid `1fr auto 1fr`). Phone + "Book now" right. Mobile: phone + menu buttons, full-screen forest menu; **while it's open the header bar turns forest too and the chat + consent buttons hide** (`html[data-menu=open] .menu-hide`), so nothing of the page shows. Trainual opens in a new tab. | He flagged the nav as off-centre (phone number weighed the right side). Fixed; measured centre = page centre. He asked for an SVG of their logo; traced from their largest original. |
-| 1 | Hero | Video bg, forest overlay. **Two NALP Awards of Excellence ribbons (2024 darker green `#1c5a3a`, 2025 green `#2f8a45`) above the headline** (`AwardRibbon` in page.tsx, drawn SVG, no NALP logo mark; their homepage shows the same two awards there as one image, saved as `recon/brand/nalp-2024-2025.png`). H1 = their tagline, WITH and FOR in red. One line of services + counties. **"Book now" button (no arrow) + "See our work →" text link.** | Tagline chosen by Justin over new headlines. First version was 5 lines (too big); now 3. Text raised above centre on desktop; centred both ways on phones. |
-| 2 | Commercial / Residential cards | Two link cards overlapping the hero's bottom. Forest-2 and red. Title, one short line, "Discover more →", photo with leaf mask. Desktop: photo fills the card's right half. | Brought back by Justin as section 2 in Hooper's style. Lines shortened from their long copy. Smaller cards and wider desktop photo at his request. |
-| 3 | Project galleries (`#work`) | Word-fill headline "Landscapes we've built and cared for across Southeastern PA." → endless **marquee** of 14 small photos at staggered heights, caption under a thin line → their full sentence as a paragraph → "View all projects →". | 30-word headline rejected; scroll-linked drift rejected: **auto marquee that never stops** (no hover pause). My 5 written captions approved. |
-| 4 | **Our services** | Forest section. **Five panels in a row; the hovered/focused one widens** (first one by default) and shows its line + "Learn more →". Pure CSS (`.svc*` in globals.css); collapsed titles shrink to 1rem so long words fit. Phones: stacked cards with text showing. Snow + Ice carries a "Commercial and HOA properties" chip. "All services →" goes to `/all-services`. | Justin: their 5-card services list must be developed. Their homepage blurbs are swapped between cards, so each line comes from that service's own page (`recon/services/`). Links follow their cards (commercial service pages). |
-| 5 | **We are Bates Landscaping** | Split: heading ("We are" small over "Bates Landscaping"), their founding paragraph + competitive-edge paragraph, "About us →"; crew photo right. Below: **history row** 2002 / 2009 / 2011 / 2017 / 2018 / 2022 (`HISTORY`). **Phones:** a vertical timeline (one column, thin line down the left, red marker per year) so the order reads without reading; from `sm` up, columns with a rule above each year. (Doodle arrows were tried and rejected by Justin.) | Added by Justin: WE ARE goes before "One of the highest rated...". The "Founded in 2011" paragraph moved here from under the carousel. |
-| 6 | "One of the highest rated..." + case studies | Word-fill headline (their claim) → **looping case slider** (8 cases) → "All case studies →". | Must loop both ways with no empty side; Hooper look (active inset, neighbours taller, near-square corners, square chips, round arrows over neighbours). Texts approved. |
-| 7 | We're hiring! | **Full-width forest strip** with faint contour lines, heading + one line, **"See Careers": one red pill with a white arrow circle inside its right end** → `/join-our-team`, **right-aligned on phones**. No photo. | Like Hooper's "Ready to transform your space?" strip, at Justin's request. |
-| 8 | **The team** | 10 circles (their headshots) with name + card title, **ordered by role**: Justin (founder, Partner + GM), Dylan (Partner + VP Ops), Megan, Molly, Cailee, Melissa, Khyss, Enrique, Angel, Juliana (their own page put Justin fourth; Justin flagged it); 5 per row desktop, 3 on phones. **Click sequence** (`TeamSection`): the circle presses to 0.92 and pops back on release → other heads fade out → the clicked head slides to the left edge → the details (name, title, full bio) slide out from behind the circle across the **full width** of the section. **Clicking anywhere on the details** (or Esc, or its × button) closes it: the details **fade out** in place, then the head slides home and the others fade back in. Hover: red ring. The open head stays pinned if the window resizes. **Phones (< 640px, 3 columns): the head goes to the top centre and the details reveal downward under it** (name centred, × top-right). A lone last person (Juliana) sits in the middle column. | Justin's spec, implemented step by step; later he asked for full-width details and a fade-out close. Timings are in the component's header comment. Khyss/Juliana headshots are still the old ones until Justin sends retouched files. |
-| 9 | **FAQ** | White section. Left: "Frequently asked questions", one line, "All questions →" (`/faq`, page not built). Right: **six of their FAQs** in native `<details name="faq">` (one open at a time); the "+" turns into a red "×". Smooth open via `::details-content` where supported. | Justin: a visible FAQ, but compact, nothing like their 31-question dump; the chat covers the rest. Answers verbatim (one en dash → comma). |
-| 10 | "We're here to help!" card | Their heading + their line "Discover how our personalized approach to landscaping can benefit your property." Red gradient card straddling page/footer on desktop, gentle bob. **On phones its section is solid forest.** The section also overlaps the footer by 1px (`-mb-px`): at fractional screen scaling (125%, 150%) the fractional seam showed as a light hairline across the page (reproduced at 1.25/1.5/1.75x, gone with the fix). **"Book now" white button + "Ask us →" text link (opens chat)** (swapped at Justin's request). | Justin: use their text (over "Not sure where to start?"). Also stands in for their hidden "Book Project Consultation Now" block. |
-| 11 | Footer | "Explore" links (2 columns on phones), Head office, Call us, Email our team, Connect with us, Bates Difference line, Track My Project ↗, Sitemap, **NALP 2024 Awards of Excellence badge** on a white chip, legal row. | Rebuilt for small screens earlier. Badge added at Justin's OK. No hours column (they publish none). |
-| Global | Chat FAB (bottom-right) | Red button, "1" badge + bubble after 3s, bubble hides after 8s, never auto-opens. Quick-reply chips with canned FAQ answers + "Book now →" to `/book-now?service=<key>`. | Behaviour proposed and accepted. |
-| Global | **Consent Preferences** (bottom-left) | Round forest button with a cookie icon → native `<dialog>` "Consent preferences": Necessary (always active), Functional, Analytics, Performance, Advertisement (switches, expandable descriptions in their CookieYes wording) → "Save my preferences" (text link), "Reject all", "Accept all". Stored in `localStorage` key `bates-consent`. | Justin: add their bottom-left Consent Preferences, in our look. The demo sets no tracking cookies. Reject and Accept get equal weight on purpose. |
-
-Chat quick-reply keys (use these on the booking page): `drainage`, `bamboo`, `hardscaping` (label "Patio / garden"),
-`maintenance`, `snow`, `other`.
+1. **His Chrome window is maximized**, so `resize_window` is ignored (`innerWidth` stays ~1745-1920). Check with
+   `javascript_tool` → `innerWidth`. Ways around it:
+   - **`tools/shots.mjs`** (headless Chrome over CDP): `node tools/shots.mjs <outDir> [/path]` (path under `/bates`,
+     e.g. `/about-us`) writes `desktop-NN.jpg` (1440x900) and `mobile-NN.jpg` (390x844 @2x) down the whole page and
+     prints `innerWidth` vs `scrollWidth` (equal = no sideways overflow). **Use these as proof images.** Output to your
+     scratchpad, not the repo. For other widths (320, 344, 360) copy the pattern and change the metrics.
+   - **Same-origin iframe** for clicking at phone width in his Chrome: on `http://localhost:3012/bates` run
+     `document.open(); document.write('<body style="margin:0;background:#555"><iframe id=m src="/bates/" style="width:390px;height:844px;border:0;display:block;margin:0 auto"></iframe></body>'); document.close();`
+     then use `document.getElementById('m').contentWindow` (a true 390px viewport; media queries apply).
+2. **His Chrome window is usually behind other windows, so `document.hidden === true`.** Then smooth scrolling doesn't
+   run, IntersectionObserver callbacks and lazy images stall, timers are throttled (a `setTimeout` inside
+   `javascript_tool` can time out the call), and screenshots come out stale or torn (a blank band above a header that's
+   really at `top: 0`). Check `document.hidden` first when something looks broken.
+3. **Coordinate clicks from the Chrome tool can land offset** in that window. Click via `javascript_tool`
+   (`el.click()`) and read state back. React ignores clicks on elements whose `disabled` prop is true even if you flip
+   the DOM attribute.
+4. **Interaction tests:** the most reliable tool was a headless CDP script (same pattern as `tools/shots.mjs`) using
+   `Input.dispatchMouseEvent` for real press, release and hover, reading state back (`aria-expanded`, widths,
+   `localStorage`, computed styles) and screenshotting each step.
+5. Tailwind v4's `scale-*` / `translate-*` utilities set the CSS **`scale` / `translate`** properties, not `transform`.
+   Read `getComputedStyle(el).scale`, and list `translate` (not `transform`) in `transition-[...]`.
+6. **Fractional scaling bugs:** Justin runs Windows display scaling; test hairline issues with
+   `deviceScaleFactor` 1.25 / 1.5 / 1.75, not only 1 and 2. (The help-card seam hairline only showed there.)
+7. **His mobile-simulator extension** injects `style="translate: ..."` on fixed elements (the chat button) before React
+   loads, so the dev overlay shows a hydration mismatch. That's the extension, not the code; it doesn't happen live.
+8. Close tabs you opened (`tabs_close_mcp`) before finishing, except one he wants kept.
+9. After merging, check the **live** page (justin94.space/bates/...) the same way; the proxy adds a CSP (§3).
 
 ---
 
-## 7.1 Traps when adding pages (read before creating a route)
+## 8. Building the other pages (the plan)
 
-These are all real and will bite:
+### 8.1 First: move the shared shell out of the homepage
+Today a new page would render with no header, footer, chat or consent. Do this refactor before (or as part of) the
+first new page, in its own commit:
 
-1. **Base path `/bates`.** Every route is under `/bates`. Page links **must** use `next/link` (`Link`) or `SmartLink`
-   (in `client.tsx`; internal → `Link`, `http...` → new tab), which add `/bates` automatically. A plain
-   `<a href="/about-us">` points at `justin94.space/about-us` and breaks. **Images, video, posters and any `/public` file
-   need `asset("/img/...")`** from `lib/base.ts` (Next does not prefix `next/image` `src` with the base path).
-   `#anchors`, `tel:` and `mailto:` are fine as plain `<a>`.
-2. **Header, ChatFab, ConsentPreferences and the footer live in `app/page.tsx`, not in the layout.** A new page gets
-   none of them. Move them (plus the floating card and `Contours`) into `app/layout.tsx` or shared components before
-   building the second page.
-3. **Header colour: `<Header overHero />` vs `<Header />`.** The homepage passes `overHero` and has
-   `<div id="top-probe">` at the top of its dark hero; the header is transparent/white while the probe is visible.
-   Without `overHero` the header is solid (paper, dark text) from the start, which is right for light pages. A page
-   with its own dark hero passes `overHero` and includes the probe div. (If the header moves into the layout, this
-   needs a per-page signal, e.g. a route check or reading the probe on mount.)
-4. **`#work`** is the gallery section's id (hero "See our work" jumps there).
-5. **Motion code must stay in client components** (`"use client"`). GSAP is only used by `WordFill`. Register plugins
-   inside effects, revert with `gsap.matchMedia()` cleanup, gate on `prefers-reduced-motion: no-preference`.
-6. **Never use `window.addEventListener("scroll")`** for effects. Use IntersectionObserver, ScrollTrigger or CSS.
-7. **Unbuilt internal links 404.** Justin asked to remove the "not part of this demo yet" toast since the pages come
-   next. Links already on the homepage that need pages: `/about-us`, `/all-services`, the 8 service paths (§5),
-   `/commercial-landscaping-services`, `/residential-landscaping-services`, `/project-gallery`, `/case-studies`,
+| Move | Where | Notes |
+|---|---|---|
+| `Header` | render once in `app/layout.tsx` | It needs to know whether the page starts with a dark hero. Recommended: a small client wrapper using `usePathname()`; `overHero` is true for `/` (and any page you give a dark hero). Keep the `#top-probe` div at the top of dark heroes. |
+| Footer (the `<footer>` block in page.tsx) | `components/footer.tsx` (server), rendered in the layout | Change the footer "Home" link target only if needed; it already uses `Link href="/"`. |
+| "We're here to help!" card | `components/help-card.tsx` | Render it above the footer on most pages (Justin mapped it to "Book Project Consultation Now", which their site puts on every page). Keep `-mb-px` and the phone/desktop background rules. |
+| `ChatFab`, `ConsentPreferences` | layout | They must exist once per page. |
+| `AwardRibbon`, `Contours`, and the class constants `pill`, `textLink`, `arrowNudge`, `label`, `h2`, `wrap` | `components/ui.tsx` (or `lib/ui.ts` for the strings) | Reuse them instead of re-typing class lists; that's how the pages stay consistent. |
+
+After the move, the homepage must look and behave exactly as before: re-run the checks in §7 on `/` before building on it.
+
+### 8.2 Inner-page anatomy (recommendation; confirm with Justin before the first page)
+- **Header:** solid by default (`<Header />`), or transparent over a dark page hero.
+- **Page hero:** a compact forest band (not full-screen): the page title in the display face (section-headline size),
+  one line of their copy, and one action pair (button + text link). Optionally a photo on the right with the same leaf
+  mask as the Commercial/Residential cards. This echoes the homepage without repeating its video hero.
+- **Body:** their verbatim copy from `recon/services/<slug>.md` etc., split into short sections with the homepage's
+  patterns: split text + photo, a relevant slice of `CaseCarousel` (filter `CASES` by tag), a few relevant `FAQS`
+  in the same accordion, the hiring strip where it fits.
+- **End:** the help card, then the footer (from the layout).
+- **Every page:** `generateMetadata`/`metadata` with a real title and description (robots `noindex` stays from the
+  root layout), links via `Link`/`SmartLink`, images via `asset()`, checked at 1440, 390 and 320.
+
+### 8.3 Page by page: content and suggested building blocks
+| Page | Content source | Suggested blocks |
+|---|---|---|
+| About Us (`/about-us`) | WE ARE copy (`recon/home-copy.md`), `HISTORY`, `TEAM`, crew photo | Page hero, WE ARE split, history timeline, `TeamSection`, hiring strip, help card |
+| Commercial / Residential landing | `recon/services/commercial-landscaping-services.md`, `.../residential-landscaping-services.md` | Page hero, their intro, the relevant service panels (reuse `.svc` pattern), matching case studies, FAQ slice (their commercial 15 / residential 9) |
+| 8 service pages | `recon/services/<slug>.md` (+ `recon/services/img/` for snow) | Page hero, copy sections, related case studies, FAQ slice, help card. Snow page: "Commercial and HOA properties" chip; never offer snow to homeowners. |
+| Project Gallery | `recon/portfolio/` + manifest | Grid of photos with captions under the thin line (gallery card style); write short captions for the 12 untitled ones (Justin approved that approach) |
+| Case Studies (`/case-studies`) | `recon/case-studies.json` | List/grid of all 16 with county, type and price chips (the chip style from the slider); filter by Residential / Commercial / service |
+| Case study detail (`/portfolio-posts/<slug>`) | same JSON, one per slug | Title, chips, the story sections, photos (check pairing, §6), "Book now" + related cases |
+| FAQ (`/faq`) | `recon/faq.md` (55) | **Must be compact** (Justin disliked their long list): grouped tabs (General / Residential / Commercial) or a filter, native `<details name=...>` accordion like the homepage, plus "Ask us →" to open the chat |
+| Book Now (`/book-now`, `/request-a-quote`) | §10.1 | Multi-step form; read `?service=` |
+| Careers (`/career-center`, `/join-our-team`) | **not captured**: fetch their page text once, save to `recon/careers.md` | Hiring strip style hero, roles list, benefits, English + Spanish application links |
+| West Chester / Phoenixville | **not captured**: fetch once, save to `recon/` | Page hero, local copy, service list, maybe a map (needs a CSP block in Portfolio, §3) |
+| Terms / SMS terms / Sitemap | fetch once | Plain readable text pages |
+| Privacy Policy | doesn't exist on their site | Ask Justin (placeholder or skip) |
+
+---
+
+## 9. Traps (all real)
+
+1. **Base path `/bates`.** Every route is under `/bates`. Page links must use `next/link` (`Link`) or `SmartLink` (in
+   `client.tsx`: internal → `Link`, `http...` → new tab), which add `/bates` automatically. A plain `<a href="/x">`
+   breaks on justin94.space. **Images, video, posters and any `/public` file need `asset("/img/...")`** (Next doesn't
+   prefix `next/image` `src`). `#anchors`, `tel:` and `mailto:` are fine as plain `<a>`.
+2. **The shell lives in `page.tsx`** until §8.1 is done.
+3. **Header colour:** `<Header overHero />` (transparent over a dark hero that contains `<div id="top-probe">`) vs
+   `<Header />` (solid from the start). When the menu is open the header is forest regardless.
+4. **`#work`** is the gallery section id (hero "See our work" jumps there).
+5. **Motion stays in client components** (`"use client"`). Register GSAP plugins inside effects, clean up with
+   `gsap.matchMedia()` revert, gate on `prefers-reduced-motion: no-preference`. Never `window.addEventListener("scroll")`.
+6. **Lint rule `react-hooks/set-state-in-effect`** (Next 16 config): don't call `setState` directly in an effect body;
+   derive initial state instead.
+7. **Unbuilt links 404** (the "not part of this demo" toast was removed at Justin's request). Homepage links that need
+   pages: `/about-us`, `/all-services`, the 8 service paths, both landing pages, `/project-gallery`, `/case-studies`,
    `/join-our-team`, `/book-now`, `/request-a-quote`, `/faq`, `/west-chester`, `/phoenixville`, `/sitemap`,
    `/terms-and-conditions`, `/privacy-policy`.
-8. **React lint rule `react-hooks/set-state-in-effect`** is on (Next 16 config). Don't call `setState` directly in an
-   effect body; derive initial state instead (that's why `Header` takes an `overHero` prop).
+8. **Floating buttons and the menu:** anything else fixed to the screen edges should also carry `menu-hide` so the
+   open mobile menu covers the page completely.
+9. **Section seams at fractional scaling:** a dark section meeting another dark section at a fractional pixel shows a
+   light hairline. Overlap by 1px (`-mb-px`) where two same-colour sections meet (as on the help card).
+10. **Text rules:** no em or en dashes in visible text (their verbatim FAQ had one; it became a comma).
 
 ---
 
-## 8. How to verify here (hard-won; read before your first screenshot)
+## 10. Specs for features still to build
 
-Justin's rule: nothing user-facing is "done" without a screenshot at desktop and ~390px phone width, sent via
-`SendUserFile`. In this setup that's harder than it sounds. (All local URLs are under `/bates`.)
+### 10.1 Booking (`/book-now`)
+- **Decided: no Calendly.** Our own calendar and form; made-up availability (e.g. weekdays, 30-min slots). On submit the
+  booking is **emailed**. Why not Calendly (don't reopen): the embed can't be restyled on free plans; a hidden Calendly
+  iframe can't be driven from our UI (cross-origin); the Scheduling API needs a paid plan and their token; scraping is
+  against their terms. Already explained to Justin.
+- **Recipient for now: `justin.masiga.94@gmail.com`.** Switch to Bates's address only when Justin says.
+- **Sending: reuse the Aqua Brevo sender** (decided). The email must say it comes from Aqua (sender name / subject that
+  mentions Aqua), because that's the verified sender. Pattern: server route → `POST https://api.brevo.com/v3/smtp/email`,
+  as in `D:\AIO Freelance\Freelance\Pitch\Aqua\lib\mail.ts`. Key + sender: Credentials README row **"Aqua (pitch)"**
+  (`BREVO_API_KEY`, `MAIL_FROM`) → add them as Vercel environment variables for this project (never in the repo). Free =
+  300 emails/day.
+- Steps: what's going on / service → date & time → details + optional 3-5 property photos (fixes their "email us
+  photos" step, which never shows an address). Pre-select from `?service=drainage|bamboo|hardscaping|maintenance|snow|other`.
+- Forms: label above input, error text below, no placeholder-as-label, WCAG AA contrast.
 
-1. **His Chrome window is maximized**, so `resize_window` is ignored (`innerWidth` stays ~1745-1920). Verify with
-   `javascript_tool` → `innerWidth`. Two ways around it:
-   - **Same-origin iframe:** on the localhost tab run
-     `document.open(); document.write('<body style="margin:0;background:#555"><iframe id=m src="/" style="width:390px;height:844px;border:0;display:block;margin:0 auto"></iframe></body>'); document.close();`
-     run it on `http://localhost:3012/bates` with the iframe `src="/bates/"`, then inspect with `document.getElementById('m').contentWindow` (its `innerWidth` is a true 390 and media queries
-     apply). Good for clicking and reading at phone width.
-   - **`tools/shots.mjs`** (headless Chrome over CDP): `node tools/shots.mjs <outDir> [/path]` (path under `/bates`, e.g. `/about-us`) writes
-     `desktop-NN.jpg` (1440x900) and `mobile-NN.jpg` (390x844 @2x) down the whole page and prints
-     `innerWidth` vs `scrollWidth` (equal = no horizontal overflow). **Use these as the proof images.** Stitch them into
-     one strip with Pillow if useful. Put output in your scratchpad, not the repo.
-2. **His Chrome window is usually behind other windows, so `document.hidden === true`.** In a hidden tab: smooth scrolling
-   doesn't run, IntersectionObserver callbacks and lazy images stall, and screenshots come out stale or torn (a blank band
-   above a header that's really at `top: 0`). Check `document.hidden` first when something looks broken. It fooled me into
-   chasing a phantom layout bug and a phantom carousel bug.
-3. **Coordinate clicks from the Chrome tool can land offset** in that window. For reliable interaction tests, click via
-   `javascript_tool` (`el.click()`), then read state back (URL hash, `scrollLeft`, `aria-live` text, dialog text).
-   Remember React ignores clicks on elements whose `disabled` prop is true, even if you flip the DOM attribute.
-4. **Close tabs you opened** (`tabs_close_mcp`) before finishing, except one he asked to keep.
-5. For interaction tests the most reliable tool was **a headless CDP script** (same pattern as `tools/shots.mjs`) that
-   uses `Input.dispatchMouseEvent` for real press, release and hover, reads state back (`aria-expanded`, element widths,
-   `localStorage`) and screenshots each step. That's how the team sequence, services hover, FAQ and consent were checked.
-6. Tailwind v4's `scale-*` utilities set the CSS **`scale`** property, not `transform`; check `getComputedStyle(el).scale`.
-
-Also verified (mobile round): no horizontal overflow and nothing clipped at **320, 344, 360, 375, 390 and 414 px**; the
-team panel fits at 320; the card/footer seam has no light pixels at 1x-1.75x scaling.
-- Justin sometimes views the site through a **Chrome mobile-simulator extension**. It injects `style="translate: ..."` on
-  fixed elements (the chat button) before React loads, which makes the Next.js dev overlay show a hydration mismatch.
-  That's the extension, not the code (nothing sets a `translate` style); it doesn't appear on the live site.
-
-What was verified in round 3: links carry `/bates` and Trainual opens in a new tab; hovering a service widens it to
-527px vs 163px for the rest; team press = scale 0.92, the right person opens, a click on the details closes it (desktop
-and 390px); the FAQ keeps one answer open; consent saves to `localStorage` and closes; no horizontal overflow at 390.
-Verified in earlier rounds: hero, nav centring (953px vs true centre 952.5px at 1920 incl. scrollbar), marquee moves
-on its own (~53px/s), carousel loops (Previous from card 1 → 8; three Nexts → 3; fast clicks stack), chat chip answers +
-"Book now" with `?service=drainage`, "See our work" jumps to `#work`, mobile menu opens/expands/locks scroll, no horizontal
-overflow at 1440 or 390.
+### 10.2 Chatbot backend
+- **Cloudflare Workers AI** (decided direction; not Ollama: always on, no PC or tunnel), e.g.
+  `@cf/meta/llama-3.1-8b-instruct-fp8-fast`, called from a server route (the site itself is on Vercel). Put all 55 FAQs
+  and the key facts (§5) in the system prompt; no vector DB.
+- Rules: answer only from Bates info; never invent prices, schedules or availability; fall back to phone and booking;
+  snow is commercial/HOA only.
+- Free tier: 10,000 neurons/day (~300 replies with the full FAQ in the prompt); hard stop at the cap until 00:00 UTC.
+- Keep `ChatFab`'s look, badge/bubble behaviour and quick-reply chips; add a text input when the backend exists.
 
 ---
 
-## 9. Specs for what comes next
+## 11. Open questions (ask Justin; don't guess)
 
-### 9.1 Booking (`/book-now`)
-- **Decided: no Calendly.** Our own calendar and form. Made-up availability (e.g. weekdays, 30-min slots). On submit, the
-  booking is **emailed**. Why not Calendly (don't reopen it): the embed can't be restyled on free plans; driving a hidden
-  Calendly iframe from our UI is impossible (cross-origin); the official Scheduling API needs a paid plan + the account's
-  token; scraping it is against their terms. All already explained to Justin.
-- **Recipient for now: `justin.masiga.94@gmail.com`.** Switch to Bates's address only when Justin says (otherwise every
-  test lands in their real inbox).
-- Sending: server route/Worker → **Brevo** `POST https://api.brevo.com/v3/smtp/email`, same pattern as
-  `D:\AIO Freelance\Freelance\Pitch\Aqua\lib\mail.ts`. Brevo only verifies the *sender*, so it can deliver to any
-  recipient. Existing key + verified sender: Credentials README row **"Aqua (pitch)"** (`BREVO_API_KEY`, `MAIL_FROM`).
-  **Decided: reuse Aqua's sender**, and the email should say it's from Aqua (sender name / subject that mentions Aqua),
-  because that's the verified sender. Brevo free = 300/day.
-- Proposed steps: what's going on / service → date & time → details + optional 3-5 property photos (fixes their "email us
-  photos" step, which never shows an address).
-- Pre-select from the query string: `/book-now?service=drainage|bamboo|hardscaping|maintenance|snow|other`.
-- Forms: label above input, error text below, no placeholder-as-label, WCAG AA contrast (DESIGN.md).
-
-### 9.2 Chatbot backend
-- **Cloudflare Worker + Workers AI** (decided direction; not Ollama: always on, no PC or tunnel). Model e.g.
-  `@cf/meta/llama-3.1-8b-instruct-fp8-fast`. Put all 55 FAQs + key business facts in the system prompt (no vector DB).
-- Rules: answer only from Bates info; never invent prices, schedules or availability; fall back to phone and booking.
-  Snow = commercial/HOA only.
-- Free tier: 10,000 neurons/day (~300 replies with the full FAQ in each prompt); free plan hard-stops at the cap until
-  00:00 UTC. Fine for a demo. (CF docs checked 2026-09-25.)
-- The existing `ChatFab` UI keeps its quick-reply chips; add a text input when the backend exists. Keep the badge/bubble
-  behaviour as built.
-
-### 9.3 Other pages (content that exists for each)
-| Page | Source content |
-|---|---|
-| About Us | `recon/home-copy.md` (WE ARE block), `recon/team.json` + headshots (reuse `TEAM` / `TeamSection`), `HISTORY`, history facts in §5 |
-| Commercial / Residential landing | `recon/services/commercial-landscaping-services.md`, `recon/services/residential-landscaping-services.md`; relevant case studies by tag |
-| Service pages (8 paths, §5) | **`recon/services/<slug>.md`** (verbatim, captured). Snow photos in `recon/services/img/`. |
-| Project Gallery | `recon/portfolio/` (20 of 24) + manifest captions (12 of 20 have no real title; write short descriptions) |
-| Case Studies | `recon/case-studies.json` (16, table in §6) |
-| FAQ (`/faq`) | `recon/faq.md` (55: homepage 31, residential 9, commercial 15). **Must be compact** (Justin disliked their long list): grouped or tabbed, native `<details>`. |
-| Careers / Join Our Team | 8 open roles, benefits, English + Spanish applications (**not captured**; fetch once and save to `recon/`). |
-| Book Now | §9.1 |
-| West Chester / Phoenixville | Not captured |
-| Privacy Policy | Doesn't exist on their site (their link goes to SMS terms). Needs writing or a placeholder; ask Justin. |
-
----
-
-## 10. Open questions (ask Justin; don't guess)
-
-Answered on 2026-09-25 (don't re-ask): scale is fine; my gallery captions are fine; the help card uses their text; a
-visible compact FAQ; reuse Aqua's Brevo sender (email says Aqua); logo SVG made; toast removed; off-site links in new
-tabs; deploy at justin94.space/bates with subpages under it; "what I found" sheet made; NALP badge added; services built.
+Answered already (don't re-ask): scale is fine; gallery captions fine; help card uses their text with "Book now" button +
+"Ask us →" link; compact visible FAQ; Aqua Brevo sender with Aqua in the email; logo SVG made; toast removed; off-site
+links in new tabs; deploy at justin94.space/bates with pages under it; interview sheet made; NALP ribbons in the hero;
+services built; team ordered by role.
 
 Still open:
-1. Khyss and Juliana retouched headshots (Justin is doing them; swap into `site/public/img/team/` as 480px WebP squares).
-2. Which page to build first, and whether to run the design skills for each new page.
-3. Privacy policy content (their site has none).
-4. Their 5 service cards link to the **commercial** service pages (as on their site). Should the homepage panels also
-   offer the residential versions?
-5. Testimonials: Bates has none, so none (never fabricate). Ask whether they have Google reviews to link.
+1. Which page to build first, and whether to run the design skills for it.
+2. The inner-page hero pattern (§8.2): confirm or steer before the first page.
+3. Khyss and Juliana retouched headshots (Justin is doing them).
+4. Footer award badge shows 2024 only. Offered: swap it for small ribbons like the hero's so both years show.
+5. Privacy policy content (their site has none).
+6. Homepage service panels link to the **commercial** service pages (as their cards do). Also offer residential ones?
+7. Testimonials: Bates has none, so none (never fabricate). Ask whether they have Google reviews to link.
 
 ---
 
-## 11. Upstream issues on their current site
+## 12. Upstream issues on their current site (the interview sheet)
 
-Delivered to Justin as **`deliverables/Bates-site-notes.pdf`** (2 pages, Bates-branded, source `site-notes.html`,
-printed with headless Chrome `Page.printToPDF`). Every item was checked live on 2026-09-25:
+`deliverables/Bates-site-notes.pdf` (2 pages, Bates-branded; source `site-notes.html`, printed with headless Chrome
+`Page.printToPDF`). Every item was checked live on 2026-09-25:
 
 1. Homepage service cards have mixed-up descriptions.
 2. Book Now asks for photos "to the provided email address" but shows none.
 3. "Privacy Policy" link goes to `/sms-terms-condition/`.
-4. Two phone numbers: site (484) 887-8678 vs trucks (484) 443-8772 (we use the truck's, per Justin).
-5. Email is `.net` while the site is `.co`, and it only appears on two inner pages.
-6. "Highest rated" claim, no reviews or testimonials anywhere (only "preview" matches in their code).
+4. Two phone numbers: site (484) 887-8678 vs trucks (484) 443-8772.
+5. Email is `.net` while the site is `.co`, and only appears on two inner pages.
+6. "Highest rated" claim with no reviews or testimonials anywhere.
 7. 31 FAQs stacked on the homepage; one answer is "Too many to list here!"; the scheduling answer only covers hardscaping.
 8. Overlapping pages: Book Now = Request a Quote (same calendar); two gallery URLs; Home link `?page_id=19`.
-9. "WE ARE: Bates Landscaping" twice; hidden "Book Project Consultation Now" block (`display:none` on desktop).
+9. "WE ARE: Bates Landscaping" twice; a hidden "Book Project Consultation Now" block (`display:none` on desktop).
 10. Case studies share titles (4x "Bamboo Removal", 2x "Custom Pondless Water Feature").
-11. 12 of 20 sampled gallery photos titled with file names ("4-2", "123", "untitled-design-76").
+11. 12 of 20 sampled gallery photos titled with file names.
 12. Bamboo missing from the Residential menu though 3 of 4 bamboo case studies are homeowners.
 
-Checked and **dropped** as untrue: "public login form in the header" (the form is in their code but hidden) and "slow
-site" (main content in ~1.7s desktop / 0.7s phone, 2 MB, ~80 requests).
+Checked and dropped as untrue: "public login form in the header" (it's in their code but hidden) and "slow site"
+(~1.7s desktop / 0.7s phone to main content). The sheet predates the discovery that they also won the **2025** award;
+if Justin wants it updated, add that to the "works well" box.
 
 ---
 
-## 12. Suggested first moves for the next session
+## 13. First moves for the next session
 
-1. Read this file, `DESIGN.md`, `PRODUCT.md`, then skim `NOTES.md`.
-2. `git switch main && git pull`, then `git switch -c claude/<page-topic>`.
-3. Start the server (§3) and look at `http://localhost:3012/bates` and the live https://justin94.space/bates in Chrome.
-4. Ask Justin, in chat, which page he wants first (§10.2). Wait for the answer.
-5. Before the second page exists, do the shared-layout move (§7.1 item 2). Keep every link on `Link`/`SmartLink` and every
-   asset on `asset()` (§7.1 item 1).
-6. Build the page, verify per §8, then ship per §1 (PR + merge = production deploy), and check it live on
-   justin94.space/bates/<page>.
+1. Read this file, `DESIGN.md`, `PRODUCT.md`; skim the end of `NOTES.md`.
+2. `git switch main && git pull`, then `git switch -c claude/<topic>`.
+3. Start the server (§3); look at `http://localhost:3012/bates` and https://justin94.space/bates in Chrome so you know
+   the language you're extending.
+4. Ask Justin, in chat, which page first and whether he's happy with the inner-page pattern (§8.2). Offer the design
+   skills. Wait for his answer.
+5. Do the shell move (§8.1) and re-verify the homepage.
+6. Build the page with the existing tokens, components and rules; verify per §7 at 1440, 390 and 320; ship per §1;
+   check it live at justin94.space/bates/<page>; append decisions to `NOTES.md` and update this file and `DESIGN.md`.

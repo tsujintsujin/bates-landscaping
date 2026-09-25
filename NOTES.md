@@ -278,3 +278,5 @@ Justin's mapping of Hooper sections → Bates:
 - Help card: **"Book now" is the button, "Ask us →" the text link** (swapped at his request).
 - Mobile menu: the header stayed transparent over the open menu, so the page showed through the top strip. Now the
   header turns forest while the menu is open, and the chat/consent buttons hide (they covered the menu's Book now).
+- Chat panel header: removed the "Ask us about your property" subtitle (Justin: not needed). Header = name + close.
+- Justin asked for a full, clean handoff so a new session builds the other pages in this design → HANDOFF.md rewritten.
