@@ -1,7 +1,10 @@
 # HANDOFF: Bates Landscaping remodel
 
-Written 2026-09-25 at the end of the homepage sessions. **The homepage is finished, approved round by round, and live at
-https://justin94.space/bates. The next session builds the other pages in the same design.** Read this top to bottom
+Written 2026-09-25 at the end of the homepage sessions. **Final state (Justin, 2026-09-25): the demo is the homepage
+only, live at https://justin94.space/bates. No other pages will be built.** Every link to another page of the site shows
+a short "not part of the demo" / "Booking isn't available in this demo" notice instead of navigating (`DemoNotice` in
+`components/client.tsx`), and any other address under `/bates` renders a "This page isn't part of the demo" page
+(`app/[...slug]/page.tsx`) instead of a 404. §8 (building other pages) is kept only as reference in case that changes. Read this top to bottom
 before touching code; §8 (building the other pages) and §9 (traps) are the parts most likely to save you a rebuild.
 
 Read in this order:
@@ -22,7 +25,7 @@ Read in this order:
 | Homepage (`site/app/page.tsx`) | **Done.** Built with `/frontendskills`, then six review rounds from Justin, every point applied and checked at desktop and phone widths down to 320px. |
 | Live | **https://justin94.space/bates** (Portfolio proxies `/bates/*` to the Vercel app, §3). Merges to `main` deploy automatically. |
 | Design system | Settled; documented in `DESIGN.md`. Reuse it on every page. |
-| Other pages | **Not started. Scope is fixed (§8.0):** header menus show an "Unavailable in demo" popup; only the pages the homepage body and footer link to get built, as design-only pages, one layer deep. |
+| Other pages | **Not being built** (Justin's final decision). Internal links show a demo notice; every other `/bates/...` address shows a "not part of the demo" page. Checked: 58 internal links clicked, none navigates; all 24 linked addresses (and made-up deeper ones) return 200. |
 | Shared shell | Header, footer, chat and consent still live inside `page.tsx`. **Move them to the layout first** (§8.1). |
 | Chat | UI built, canned answers from their FAQs. **No AI backend yet** (§10.2). |
 | Booking | Not built (§10.1). `/book-now?service=<key>` is already linked from the chat. |
@@ -317,7 +320,13 @@ Justin's rule: nothing user-facing is "done" without screenshots at desktop and 
 
 ## 8. Building the other pages (the plan)
 
-### 8.0 Scope (decided by Justin, 2026-09-25): read this before anything else in §8
+### 8.0 Superseded: no pages are being built
+
+**Not happening.** Justin later decided the demo stays homepage-only (see the note at the top). The scope below
+(written minutes earlier) is kept only as history; the "Unavailable in demo" idea was implemented site-wide instead, as
+`DemoNotice`.
+
+#### Former scope (superseded)
 1. **The header menus are not built.** Services, Portfolio, About Us and Careers (every dropdown item, the "About Us"
    link, and the same items in the mobile menu, Trainual included) **don't navigate**. Clicking any of them shows a small
    **"Unavailable in demo"** popup in the site's style (toast or small dialog; forest background, white text, closes on
