@@ -93,9 +93,78 @@ h3 {
   }
 }
 
+/* Services: five panels in a row on desktop; the hovered or focused one widens (the first by default) */
+.svc-more {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+@media (min-width: 1024px) {
+  .svc-row {
+    flex-direction: row;
+    gap: 0;
+    height: 500px;
+  }
+  .svc {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 6px;
+    transition: flex-grow 600ms var(--ease-in-out);
+  }
+  .svc-more {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 450ms var(--ease-in-out),
+      opacity 200ms ease;
+  }
+  .svc-row:not(:hover):not(:focus-within) > .svc:first-child,
+  .svc-row > .svc:hover,
+  .svc-row > .svc:focus-within {
+    flex-grow: 3.4;
+  }
+  /* narrow panels: smaller title so single long words ("Maintenance") fit */
+  .svc-title {
+    font-size: 1rem;
+    transition: font-size 400ms var(--ease-in-out);
+  }
+  .svc-row:not(:hover):not(:focus-within) > .svc:first-child .svc-title,
+  .svc:hover .svc-title,
+  .svc:focus-within .svc-title {
+    font-size: 1.6rem;
+  }
+  .svc-row:not(:hover):not(:focus-within) > .svc:first-child .svc-more,
+  .svc:hover .svc-more,
+  .svc:focus-within .svc-more {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transition-delay: 150ms, 300ms;
+  }
+}
+
+/* FAQ answers open smoothly where the browser supports animating to auto height */
+:root {
+  interpolate-size: allow-keywords;
+}
+.faq::details-content {
+  height: 0;
+  overflow: clip;
+  transition:
+    height 350ms var(--ease-out),
+    content-visibility 350ms allow-discrete;
+}
+.faq[open]::details-content {
+  height: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .floating,
   .rise {
     animation: none;
+  }
+  .svc,
+  .svc-more,
+  .svc-title,
+  .faq::details-content {
+    transition: none;
   }
 }

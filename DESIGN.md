@@ -137,8 +137,9 @@ homepage as of 2026-09-25. Other pages must reuse it.
 |---|---|
 | 3px | Case-study tag chips (square-ish, like Hooper's) |
 | 6px | Gallery photo cards, case-study slides (near-square, like Hooper's) |
-| 16px (`rounded-2xl`) | Commercial/Residential cards, dropdown panels, chat panel |
-| 24px (`rounded-3xl`) | Floating "Not sure where to start?" card |
+| 16px (`rounded-2xl`) | Commercial/Residential cards, service panels, dropdown panels, chat panel, consent dialog |
+| Circle | Team headshots |
+| 24px (`rounded-3xl`) | Floating "We're here to help!" card |
 | Full pill | Every button, the phone link, social icons, arrow buttons |
 
 Leaf mask on the Commercial/Residential photos: `border-radius: 0 62% 0 62%` on mobile/tablet;
@@ -186,8 +187,23 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
   `pos`, keyed by absolute index so they animate `transform` between positions (700ms custom ease-in-out). Loops both
   ways forever. Active slide is inset top and bottom with `clip-path` so the neighbours look taller (Hooper's look).
   Round red arrows over the neighbours; swipe on touch (a flick > 0.11 px/ms or a 50px drag); arrow keys when focused.
-- **Floating CTA card**: red gradient card with contour line art, 12px vertical bob (3.2s, CSS), straddles page/footer.
-  "Ask us" opens the chat.
+- **Floating CTA card** ("We're here to help!"): red gradient card with contour line art, 12px vertical bob (3.2s,
+  CSS), straddles page/footer. "Ask us" opens the chat.
+- **Service panels** (`.svc-row` / `.svc` in globals.css, pure CSS): five full-height photo panels in a row from `lg`;
+  the hovered or focused panel grows to `flex-grow: 3.4` (600ms ease-in-out), the first one is open by default. The
+  open panel's description reveals with a `grid-template-rows: 0fr → 1fr` transition; collapsed titles are 1rem and
+  grow to 1.6rem. Below `lg` they stack with everything visible.
+- **Team** (`TeamSection`): circle headshots (96px phone, 148px desktop), name + title under each. Press scales the
+  circle to 0.92; click: others fade (250ms), the head slides to the left edge (550ms ease-in-out, 200ms delay), the
+  details reveal from behind the circle with `clip-path` + translate (500ms ease-out, 700ms delay). Clicking the
+  details reverses it (details 300ms, head 550ms after 300ms, others fade back in at 750ms). Stage height animates to
+  fit the bio.
+- **FAQ accordion**: native `<details name="faq">` (exclusive), 1px forest/10 dividers, round "+" that rotates into a
+  red "×" when open, `::details-content` height animation where supported.
+- **Consent Preferences**: round forest button bottom-left (cookie icon), native `<dialog>` with a blurred forest
+  backdrop, categories as `<details>` rows with red switches, footer: "Save my preferences" text link + "Reject all"
+  (outlined pill) + "Accept all" (red pill).
+- **History row**: six columns (2 on phones), each a 1px top rule, year in red display type, one line of moss text.
 - **Chat FAB**: red round button bottom-right. After 3s a "1" badge plus a speech bubble "Hey there, how can we help
   you?"; the bubble hides after 8s, the badge stays until opened (both remembered for the visit in sessionStorage).
   Never auto-opens. Panel shows quick-reply chips (Drainage, Bamboo, Patio / garden, Maintenance, Snow, Something
