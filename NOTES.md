@@ -252,3 +252,27 @@ Justin's mapping of Hooper sections → Bates:
   separate white circle).
 - Also fixed: the opened head could sit off the grid's left edge if the window resized while open (DevTools opening);
   the slide target is now re-measured on resize.
+
+## 2026-09-25: mobile edits from Justin
+- **Doodle arrows** (SVG, hand-drawn look, each one different) in the history row pointing to the next year, **phones only**.
+- Hiring strip on phones: **See Careers button on the right**.
+- Team on small screens: the **clicked head goes to the centre** (not the left).
+- Team on small screens: **centre the last person** when the row has one left over (Juliana).
+- A **white line** shows behind the "We're here to help!" card on phones: remove it.
+- He saw a Next.js dev overlay "hydration" error while viewing through a Chrome mobile-preview extension.
+- Done: doodle arrows (phones), careers button right on phones, team head centred on phones with details below,
+  Juliana centred, help card section solid forest on phones. The "hydration" error he saw comes from his Chrome
+  mobile-simulator extension adding `style="translate: ..."` to the fixed chat button before React loads; nothing in
+  our code sets that, and it only surfaces in the dev overlay.
+- Doodle arrows: Justin said they look bad → removed. Replaced with a **vertical timeline on phones** (line + red markers)
+  so the order is obvious without reading.
+- White line behind the help card was actually a **hairline at the card-section/footer seam** at fractional screen
+  scaling; fixed with a 1px overlap (`-mb-px`). Verified with a pixel scan at 1x-1.75x (old live site showed it).
+- Team reordered by role (Justin flagged the founder was 4th): Justin, Dylan, Megan, Molly, Cailee, Melissa, Khyss,
+  Enrique, Angel, Juliana.
+- Small screens checked at 320 / 344 / 360: no overflow, nothing clipped.
+- Their homepage has a **2024 + 2025 NALP Awards of Excellence** image above the hero heading
+  (`recon/brand/nalp-2024-2025.png`, uploaded Jan 2026; my text capture missed it because it's an image). Justin: make
+  SVG ribbons, green and darker green, above the hero text → `AwardRibbon`, no NALP logo mark. Made taller at his
+  request so RECIPIENT isn't tight to the border.
+- Help card: **"Book now" is the button, "Ask us →" the text link** (swapped at his request).

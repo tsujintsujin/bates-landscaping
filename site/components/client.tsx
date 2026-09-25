@@ -495,6 +495,7 @@ export function ChatFab() {
 
 /* ---------- The team: circles; click = others fade, head slides left, details slide out of the circle ---------- */
 // Sequence (open):  others fade 0-250ms → head slides to the left edge 200-750ms → details slide out 700-1200ms.
+// Phones (< sm, 3 columns): the head slides to the top centre instead and the details reveal downward under it.
 // Sequence (close): details fade out 0-300ms → head slides home 300-850ms → others fade in 750ms+.
 // Clicking anywhere on the details (or Esc, or the close button) runs the close sequence.
 
@@ -512,11 +513,14 @@ export function TeamSection() {
   const closeBtn = useRef<HTMLButtonElement>(null);
   const openSel = useRef<number | null>(null); // who is open right now, for the resize observer
 
-  // Distance from a head's circle to the grid's top-left, from layout offsets (unaffected by the transform itself).
+  // Distance from a head's circle to its target (grid top-left, or top-centre on phones), from layout offsets, which
+  // the transform itself doesn't affect.
   const measure = (i: number) => {
     const b = heads.current[i]!;
     const c = circles.current[i]!;
-    return { x: -(b.offsetLeft + c.offsetLeft), y: -(b.offsetTop + c.offsetTop) };
+    const phone = !matchMedia("(min-width: 640px)").matches;
+    const targetX = phone ? (grid.current!.offsetWidth - c.offsetWidth) / 2 : 0;
+    return { x: targetX - (b.offsetLeft + c.offsetLeft), y: -(b.offsetTop + c.offsetTop) };
   };
 
   // Keep the stage as tall as the grid (and the open panel) so the page doesn't jump, and keep an open head pinned to
@@ -540,7 +544,7 @@ export function TeamSection() {
 
   useEffect(() => {
     if (!open) return;
-    setPanelH(panel.current!.scrollHeight);
+    setPanelH(panel.current!.offsetTop + panel.current!.scrollHeight);
     const t = setTimeout(() => closeBtn.current?.focus({ preventScroll: true }), 700);
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     addEventListener("keydown", onKey);
@@ -569,6 +573,9 @@ export function TeamSection() {
             <li
               key={m.name}
               className={`flex justify-center transition-opacity duration-300 motion-reduce:transition-none ${
+                // a lone last person on a 3-column row sits in the middle column
+                i === TEAM.length - 1 && TEAM.length % 3 === 1 ? "col-start-2 sm:col-start-auto" : ""
+              } ${
                 others ? "pointer-events-none opacity-0 delay-0" : "opacity-100 delay-[750ms]"
               }`}
             >
@@ -608,19 +615,18 @@ export function TeamSection() {
         aria-label={p ? `About ${p.name}` : undefined}
         aria-hidden={!open}
         onClick={open ? close : undefined}
-        className={`absolute right-0 top-0 cursor-pointer pb-2 pl-4 ease-(--ease-out) motion-reduce:transition-none md:pl-8 ${
+        className={`absolute left-0 right-0 top-[calc(var(--head)+1.25rem)] cursor-pointer pb-2 ease-(--ease-out) motion-reduce:transition-none sm:left-(--head) sm:top-0 sm:pl-4 md:pl-8 ${
           open
-            ? "pointer-events-auto translate-x-0 opacity-100 transition-[clip-path,transform,opacity] duration-500 delay-700 [clip-path:inset(0_0_0_0)]"
+            ? "pointer-events-auto translate-0 opacity-100 transition-[clip-path,translate,opacity] duration-500 delay-700 [clip-path:inset(0_0_0_0)]"
             : fading
-              ? "pointer-events-none translate-x-0 opacity-0 transition-opacity duration-300 delay-0 [clip-path:inset(0_0_0_0)]"
-              : "pointer-events-none -translate-x-[calc(var(--head)/2)] opacity-0 transition-none [clip-path:inset(0_100%_0_0)]"
+              ? "pointer-events-none translate-0 opacity-0 transition-opacity duration-300 delay-0 [clip-path:inset(0_0_0_0)]"
+              : "pointer-events-none -translate-y-[calc(var(--head)/2)] opacity-0 transition-none [clip-path:inset(0_0_100%_0)] sm:translate-y-0 sm:-translate-x-[calc(var(--head)/2)] sm:[clip-path:inset(0_100%_0_0)]"
         }`}
-        style={{ left: "var(--head)" }}
       >
         {p && (
           <div>
-            <div className="flex items-start justify-between gap-4">
-              <div>
+            <div className="relative flex items-start justify-center gap-4 sm:justify-between">
+              <div className="text-center sm:text-left">
                 <h3 className="font-display text-2xl font-bold leading-tight tracking-[-0.02em] md:text-3xl">{p.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-red">{p.role}</p>
               </div>
@@ -628,7 +634,7 @@ export function TeamSection() {
                 ref={closeBtn}
                 tabIndex={open ? 0 : -1}
                 aria-label={`Close ${p.name}'s details`}
-                className="press grid size-9 shrink-0 place-items-center rounded-full bg-forest/5 text-ink hover:bg-forest/10"
+                className="press absolute right-0 top-0 grid size-9 shrink-0 place-items-center rounded-full bg-forest/5 text-ink hover:bg-forest/10 sm:static"
               >
                 <Close className="size-4" weight="bold" />
               </button>
