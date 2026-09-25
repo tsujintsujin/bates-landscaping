@@ -22,7 +22,7 @@ Read in this order:
 | Homepage (`site/app/page.tsx`) | **Done.** Built with `/frontendskills`, then six review rounds from Justin, every point applied and checked at desktop and phone widths down to 320px. |
 | Live | **https://justin94.space/bates** (Portfolio proxies `/bates/*` to the Vercel app, §3). Merges to `main` deploy automatically. |
 | Design system | Settled; documented in `DESIGN.md`. Reuse it on every page. |
-| Other pages | **Not started.** Homepage links point at their real paths under `/bates` and 404 until each page exists (§9 item 7). |
+| Other pages | **Not started. Scope is fixed (§8.0):** header menus show an "Unavailable in demo" popup; only the pages the homepage body and footer link to get built, as design-only pages, one layer deep. |
 | Shared shell | Header, footer, chat and consent still live inside `page.tsx`. **Move them to the layout first** (§8.1). |
 | Chat | UI built, canned answers from their FAQs. **No AI backend yet** (§10.2). |
 | Booking | Not built (§10.1). `/book-now?service=<key>` is already linked from the chat. |
@@ -317,6 +317,47 @@ Justin's rule: nothing user-facing is "done" without screenshots at desktop and 
 
 ## 8. Building the other pages (the plan)
 
+### 8.0 Scope (decided by Justin, 2026-09-25): read this before anything else in §8
+1. **The header menus are not built.** Services, Portfolio, About Us and Careers (every dropdown item, the "About Us"
+   link, and the same items in the mobile menu, Trainual included) **don't navigate**. Clicking any of them shows a small
+   **"Unavailable in demo"** popup in the site's style (toast or small dialog; forest background, white text, closes on
+   its own or on click/Esc; respects reduced motion). The earlier `SoonToast` in git history (commit `aa4a9ab`,
+   `site/components/client.tsx`) is a starting point. The header's logo (→ home), phone number and "Book now" keep
+   working.
+2. **Only one layer of pages below the homepage gets built**: the pages that the homepage's **body and footer** link to
+   (list below). They are **design-only**: real content and layout, but the links and buttons inside them don't go
+   anywhere (show the same "Unavailable in demo" popup rather than a dead click). The exceptions are shared shell
+   links: the logo / "Home" back to the homepage, the header "Book now", the phone and email links, the chat and
+   consent buttons.
+3. **Nothing deeper is built**: no case-study detail pages (`/portfolio-posts/<slug>`), no pages reachable only from
+   another subpage, and none of the 12 dropdown destinations unless the homepage body or footer links to them.
+
+Pages to build (one layer; each is where a homepage body or footer link already points):
+
+| Page | Linked from on the homepage |
+|---|---|
+| `/commercial-landscaping-services` | Commercial card; footer "Commercial" |
+| `/residential-landscaping-services` | Residential card; footer "Residential" |
+| `/all-services` | "All services →" in Our services |
+| `/commercial-landscaping-installation-design`, `/commercial-maintenance`, `/commercial-drainage`, `/bamboo-remediation`, `/snow-ice-removal-west-chester` | The five service panels |
+| `/project-gallery` | "View all projects →"; footer "Portfolio" |
+| `/about-us` | "About us →" in We are Bates Landscaping; footer "About Us" |
+| `/case-studies` | "All case studies →" |
+| `/join-our-team` | "See Careers"; footer "Careers" |
+| `/faq` | "All questions →" |
+| `/book-now` | Hero, help card, header "Book now", chat answers (`?service=`) |
+| `/request-a-quote` | Footer "Contact" (same content as Book Now on their site; can reuse it) |
+| `/west-chester`, `/phoenixville` | Footer "Also in ..." |
+| `/sitemap`, `/terms-and-conditions`, `/privacy-policy` | Footer |
+
+Note the overlap: About Us, the landing pages, gallery and careers exist as pages (reached from the homepage body and
+footer), while the header menu items that point at the same places still show the popup. That's what Justin asked for;
+if he later wants the header to use the built pages, it's a one-line change per item.
+
+Because pages are design-only, the booking form (§10.1) and chatbot backend (§10.2) are **not** part of this scope
+unless Justin asks; `/book-now` is built as a designed page whose submit shows the popup.
+
+
 ### 8.1 First: move the shared shell out of the homepage
 Today a new page would render with no header, footer, chat or consent. Do this refactor before (or as part of) the
 first new page, in its own commit:
@@ -348,15 +389,15 @@ After the move, the homepage must look and behave exactly as before: re-run the 
 |---|---|---|
 | About Us (`/about-us`) | WE ARE copy (`recon/home-copy.md`), `HISTORY`, `TEAM`, crew photo | Page hero, WE ARE split, history timeline, `TeamSection`, hiring strip, help card |
 | Commercial / Residential landing | `recon/services/commercial-landscaping-services.md`, `.../residential-landscaping-services.md` | Page hero, their intro, the relevant service panels (reuse `.svc` pattern), matching case studies, FAQ slice (their commercial 15 / residential 9) |
-| 8 service pages | `recon/services/<slug>.md` (+ `recon/services/img/` for snow) | Page hero, copy sections, related case studies, FAQ slice, help card. **Each commercial service page links to its residential version where one exists** (Installation & Design ↔ `/design`, Maintenance ↔ `/maintain`, Drainage ↔ `/drainage-solutions`), and back (decided). Snow page: "Commercial and HOA properties" chip; never offer snow to homeowners. |
+| The 5 service pages linked from the homepage panels (§8.0; the 3 residential-only ones, `/design`, `/maintain`, `/drainage-solutions`, are header-menu-only, so not built) | `recon/services/<slug>.md` (+ `recon/services/img/` for snow) | Page hero, copy sections, related case studies, FAQ slice, help card. Each commercial service page mentions its residential version where one exists (Installation & Design ↔ `/design`, Maintenance ↔ `/maintain`, Drainage ↔ `/drainage-solutions`); under §8.0 that link shows the popup. Snow page: "Commercial and HOA properties" chip; never offer snow to homeowners. |
 | Project Gallery | `recon/portfolio/` + manifest | Grid of photos with captions under the thin line (gallery card style); write short captions for the 12 untitled ones (Justin approved that approach) |
 | Case Studies (`/case-studies`) | `recon/case-studies.json` | List/grid of all 16 with county, type and price chips (the chip style from the slider); filter by Residential / Commercial / service |
-| Case study detail (`/portfolio-posts/<slug>`) | same JSON, one per slug | Title, chips, the story sections, photos (check pairing, §6), "Book now" + related cases |
+| Case study detail (`/portfolio-posts/<slug>`) | same JSON | **Not built** (two layers deep, §8.0). Case cards on `/case-studies` show the popup when clicked. |
 | FAQ (`/faq`) | `recon/faq.md` (55) | **Must be compact** (Justin disliked their long list): grouped tabs (General / Residential / Commercial) or a filter, native `<details name=...>` accordion like the homepage, plus "Ask us →" to open the chat |
-| Book Now (`/book-now`, `/request-a-quote`) | §10.1 | Multi-step form; read `?service=` |
-| Careers (`/career-center`, `/join-our-team`) | **not captured**: fetch their page text once, save to `recon/careers.md` | Hiring strip style hero, roles list, benefits, English + Spanish application links |
+| Book Now (`/book-now`, `/request-a-quote`) | §10.1 | Designed multi-step form (read `?service=` to preselect); submit shows the popup (design-only, §8.0) |
+| Careers (`/join-our-team` only; `/career-center` is header-menu-only) | **not captured**: fetch their page text once, save to `recon/careers.md` | Hiring strip style hero, roles list, benefits, English + Spanish application links |
 | West Chester / Phoenixville | **not captured**: fetch once, save to `recon/` | Page hero, local copy, service list, maybe a map (needs a CSP block in Portfolio, §3) |
-| Terms / SMS terms / Sitemap | fetch once | Plain readable text pages |
+| Terms / Sitemap (`/terms-and-conditions`, `/sitemap`) | fetch once | Plain readable text pages (SMS terms isn't linked from the homepage, so not built) |
 | Privacy Policy | doesn't exist on their site | **Decided:** a short, clearly labelled placeholder ("This is a demo; Bates Landscaping's privacy policy goes here"). Don't write legal text. |
 
 ---
@@ -375,10 +416,9 @@ After the move, the homepage must look and behave exactly as before: re-run the 
    `gsap.matchMedia()` revert, gate on `prefers-reduced-motion: no-preference`. Never `window.addEventListener("scroll")`.
 6. **Lint rule `react-hooks/set-state-in-effect`** (Next 16 config): don't call `setState` directly in an effect body;
    derive initial state instead.
-7. **Unbuilt links 404** (the "not part of this demo" toast was removed at Justin's request). Homepage links that need
-   pages: `/about-us`, `/all-services`, the 8 service paths, both landing pages, `/project-gallery`, `/case-studies`,
-   `/join-our-team`, `/book-now`, `/request-a-quote`, `/faq`, `/west-chester`, `/phoenixville`, `/sitemap`,
-   `/terms-and-conditions`, `/privacy-policy`.
+7. **Links right now:** homepage body and footer links point at real paths that 404 until each page exists; header menu
+   links currently navigate too. Both change under §8.0: header menus → "Unavailable in demo" popup; body/footer
+   links → the built pages; links inside those pages → the popup.
 8. **Floating buttons and the menu:** anything else fixed to the screen edges should also carry `menu-hide` so the
    open mobile menu covers the page completely.
 9. **Section seams at fractional scaling:** a dark section meeting another dark section at a fractional pixel shows a
@@ -464,8 +504,9 @@ if Justin wants it updated, add that to the "works well" box.
 2. `git switch main && git pull`, then `git switch -c claude/<topic>`.
 3. Start the server (§3); look at `http://localhost:3012/bates` and https://justin94.space/bates in Chrome so you know
    the language you're extending.
-4. Offer Justin the design skills for the new pages and say which page you'll start with (§11.1). Nothing else needs
-   asking first; the inner-page pattern is confirmed (§8.2).
-5. Do the shell move (§8.1) and re-verify the homepage.
-6. Build the page with the existing tokens, components and rules; verify per §7 at 1440, 390 and 320; ship per §1;
+4. Read §8.0 (scope). Offer Justin the design skills for the new pages and say which page you'll start with.
+   Nothing else needs asking first; the inner-page pattern is confirmed (§8.2).
+5. Add the "Unavailable in demo" popup and wire the header menus to it (§8.0 item 1).
+6. Do the shell move (§8.1) and re-verify the homepage.
+7. Build the pages in §8.0 with the existing tokens, components and rules; verify per §7 at 1440, 390 and 320; ship per §1;
    check it live at justin94.space/bates/<page>; append decisions to `NOTES.md` and update this file and `DESIGN.md`.

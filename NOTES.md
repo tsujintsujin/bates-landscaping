@@ -291,3 +291,11 @@ Justin's mapping of Hooper sections → Bates:
 6. Homepage service panels stay linked to the commercial pages; each service page links to its residential version
    where one exists.
 7. Reviews: skip; ask Bates in the interview. Never fabricate.
+
+## 2026-09-25: scope for the remaining pages (Justin)
+- The next pages are **design only**: links and buttons inside them don't go anywhere. **One layer** of subpages below
+  the homepage, nothing deeper.
+- **Don't build the header menus' pages** (Services, Portfolio, About Us, Careers): clicking them shows an
+  **"Unavailable in demo"** popup instead.
+- Recorded in HANDOFF §8.0 with the list of pages to build (the ones the homepage body and footer link to). Not
+  implemented in this session; he continues in a new session.
