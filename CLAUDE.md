@@ -1,6 +1,8 @@
 # CLAUDE.md — Bates Landscaping remodel (pitch demo)
 
-Demo remodel of bateslandscaping.co that Justin uses to apply for a job at Bates. Homepage built; other pages next.
+Demo remodel of bateslandscaping.co that Justin uses to apply for a job at Bates. Homepage built and live at
+justin94.space/bates; next: design-only subpages, one layer deep, with header menus showing "Unavailable in demo"
+(HANDOFF §8.0).
 
 **Before doing anything, read `HANDOFF.md`** (status, decisions, traps, how to verify here), then `DESIGN.md`
 (design system as built) and `PRODUCT.md` (product truth). `NOTES.md` is the decision log: append every decision
