@@ -25,11 +25,19 @@ const wrap = "mx-auto max-w-[1180px] px-4 md:px-8 xl:px-0";
 
 /* NALP Awards of Excellence ribbons (their homepage shows the 2024 and 2025 awards above the hero headline; this is
    our drawn version, without NALP's logo mark). */
-function AwardRibbon({ year, fill }: { year: string; fill: string }) {
+function AwardRibbon({
+  year,
+  fill,
+  size = "h-[106px] md:h-[130px]",
+}: {
+  year: string;
+  fill: string;
+  size?: string;
+}) {
   return (
     <svg
       viewBox="0 0 110 140"
-      className="h-[106px] w-auto drop-shadow-[0_8px_14px_rgb(0_0_0/0.35)] md:h-[130px]"
+      className={`${size} w-auto drop-shadow-[0_8px_14px_rgb(0_0_0/0.35)]`}
       role="img"
       aria-label={`National Association of Landscape Professionals, ${year} Awards of Excellence recipient`}
     >
@@ -435,14 +443,9 @@ export default function Home() {
                   <Link href="/sitemap" className="hover:text-red">Sitemap</Link>
                 </div>
               </div>
-              <div className="w-fit shrink-0 rounded-xl bg-white px-3 py-2">
-                <Image
-                  src={asset("/img/aoe-2024.webp")}
-                  alt="National Association of Landscape Professionals, 2024 Awards of Excellence Winner"
-                  width={600}
-                  height={217}
-                  className="h-auto w-[180px]"
-                />
+              <div className="flex shrink-0 gap-2">
+                <AwardRibbon year="2024" fill="#1c5a3a" size="h-[92px]" />
+                <AwardRibbon year="2025" fill="#2f8a45" size="h-[92px]" />
               </div>
             </div>
           </div>

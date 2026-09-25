@@ -280,3 +280,14 @@ Justin's mapping of Hooper sections → Bates:
   header turns forest while the menu is open, and the chat/consent buttons hide (they covered the menu's Book now).
 - Chat panel header: removed the "Ask us about your property" subtitle (Justin: not needed). Header = name + close.
 - Justin asked for a full, clean handoff so a new session builds the other pages in this design → HANDOFF.md rewritten.
+
+## 2026-09-25: Justin's answers to the handoff's open questions
+1. Page order: doesn't matter to him (next session picks; About Us suggested as the pattern-setter).
+2. Inner-page header: **confirmed**: must not copy the homepage video hero; compact dark-green band (title, one line,
+   button + link, optional leaf-masked photo).
+3. Khyss and Juliana: the current headshots **are already his edited versions**. Final; nothing pending.
+4. Footer award: **update it** → two small ribbons (2024 + 2025) like the hero's, replacing the 2024-only badge image.
+5. Privacy policy: a short, clearly labelled placeholder; don't invent legal text.
+6. Homepage service panels stay linked to the commercial pages; each service page links to its residential version
+   where one exists.
+7. Reviews: skip; ask Bates in the interview. Never fabricate.

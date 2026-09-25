@@ -27,7 +27,8 @@ Read in this order:
 | Chat | UI built, canned answers from their FAQs. **No AI backend yet** (§10.2). |
 | Booking | Not built (§10.1). `/book-now?service=<key>` is already linked from the chat. |
 | Consent Preferences | Built (bottom-left button + dialog, choice kept in `localStorage`). |
-| Git | Private repo `tsujintsujin/bates-landscaping`, `main` default. PRs #1-#5 merged. |
+| Git | Private repo `tsujintsujin/bates-landscaping`, `main` default. PRs #1-#6 merged. |
+| Open questions | **None blocking.** All answered by Justin (§11). |
 | Interview sheet | `deliverables/Bates-site-notes.pdf`: 12 verified issues on their current site (§12). |
 | Dark mode | Not built, not requested. Light page with dark bands. |
 
@@ -51,7 +52,7 @@ These come from friction in the sessions so far. Getting them wrong costs his tr
    big?", the honest answer (skills loaded but their comp and review steps skipped; Hooper's big-type numbers copied)
    was the right one.
 6. **He edits media himself** (OpenCut for video, image retouching). Don't regenerate assets he said are his (the hero
-   video; Khyss and Juliana's headshots).
+   video; the team headshots, including Khyss and Juliana's, which he already retouched).
 7. **Plain language.** Short tables and bullets. No jargon.
 8. **He reviews visually, fast, and on small phones.** He sends numbered lists of fixes, often mid-task, with
    screenshots. He views pages through a Chrome **mobile-simulator extension** (a phone frame) and at Windows display
@@ -173,8 +174,7 @@ Bates/
                           Close, Chevron, Chat, Cookie, Plus, FacebookLogo, InstagramLogo, LinkedinLogo)
     lib/base.ts           BASE = "/bates" and asset() for /public paths
     lib/content.ts        PHONE, PHONE_HREF, EMAIL, ADDRESS, SOCIALS, NAV, GALLERY, CASES, SERVICES, HISTORY, TEAM, FAQS, CHIPS
-    public/img/           g-* gallery, c-* case studies, s-snow, crew, team/*.webp (480px squares), logo.svg (traced),
-                          aoe-2024.webp (NALP badge, footer), logo.webp (old raster, unused)
+    public/img/           g-* gallery, c-* case studies, s-snow, crew, team/*.webp (480px squares), logo.svg (traced)
     public/media/         hero.webm, hero.mp4, hero-poster.webp
 ```
 
@@ -191,7 +191,7 @@ the logo (red and grey layers separately from the 1044x275 original, recoloured 
 | Tagline | "The best Landscape company to work WITH and FOR" |
 | Claim | "One of the highest rated companies to work with and for in Southeastern PA" |
 | History | Justin Bates learned the trade from his father in 2002; company started 2009 (mother's garage); incorporated 2011; West Chester office 2017; drainage team 2018; Phoenixville location 2022 |
-| Awards | **NALP (National Association of Landscape Professionals) Awards of Excellence: 2024 and 2025 recipient.** Their homepage shows both above the hero (`recon/brand/nalp-2024-2025.png`); their footer shows the 2024 badge (`recon/brand/aoe2024winner.png`). |
+| Awards | **NALP (National Association of Landscape Professionals) Awards of Excellence: 2024 and 2025 recipient.** Their homepage shows both above the hero (`recon/brand/nalp-2024-2025.png`); their footer shows the 2024 badge (`recon/brand/aoe2024winner.png`). Ours shows both years as drawn ribbons in the hero **and the footer**. |
 | Address | 705 St Marys St, Phoenixville, PA 19460. Also West Chester and Phoenixville location pages. |
 | Phone | **(484) 443-8772** (the number on their trucks; **decided by Justin** over the site's (484) 887-8678). `PHONE` / `PHONE_HREF`. |
 | Email | `info@bateslandscaping.net` (.net, while the site is .co; the only address anywhere) |
@@ -269,8 +269,8 @@ Khyss (Human Resources Administrator est 2024), Enrique (Supervisor est 2011, fi
 2018), Juliana (Sales Assistant est 2025). **Ordered by role** (Justin asked why the founder was 4th; their own page's
 order was used before). Bios verbatim.
 - Megan's card says "Area Manager est 2015"; her page bio says Account Manager. Card used as-is.
-- **Khyss and Juliana's headshots are being retouched by Justin** (to match the others: red Bates tops, dark grey
-  backdrop). Swap them into `site/public/img/team/` as 480px WebP squares when he sends them. Don't generate replacements.
+- All ten headshots are final. **Khyss and Juliana's are already Justin's retouched versions** (earlier notes said they
+  were pending; that was wrong). Don't generate or swap headshots.
 - About-page videos "Meet Ramon" and "Meet Nerly Garcia" feature people not on the team list. Their other videos
   (Hardscaping 76 MB, SpringCleanUp 56 MB, BambooRemoval 187 MB, Meet_Angel 91 MB, Meet_Ramon 124 MB,
   Meet_Nerly_Garcia 134 MB) are under `bateslandscaping.co/wp-content/uploads/2023/03/` or `/2024/04/`, not downloaded.
@@ -331,11 +331,11 @@ first new page, in its own commit:
 
 After the move, the homepage must look and behave exactly as before: re-run the checks in §7 on `/` before building on it.
 
-### 8.2 Inner-page anatomy (recommendation; confirm with Justin before the first page)
+### 8.2 Inner-page anatomy (**confirmed by Justin**)
 - **Header:** solid by default (`<Header />`), or transparent over a dark page hero.
 - **Page hero:** a compact forest band (not full-screen): the page title in the display face (section-headline size),
   one line of their copy, and one action pair (button + text link). Optionally a photo on the right with the same leaf
-  mask as the Commercial/Residential cards. This echoes the homepage without repeating its video hero.
+  mask as the Commercial/Residential cards. Justin: inner pages **must not copy the homepage's video hero**.
 - **Body:** their verbatim copy from `recon/services/<slug>.md` etc., split into short sections with the homepage's
   patterns: split text + photo, a relevant slice of `CaseCarousel` (filter `CASES` by tag), a few relevant `FAQS`
   in the same accordion, the hiring strip where it fits.
@@ -348,7 +348,7 @@ After the move, the homepage must look and behave exactly as before: re-run the 
 |---|---|---|
 | About Us (`/about-us`) | WE ARE copy (`recon/home-copy.md`), `HISTORY`, `TEAM`, crew photo | Page hero, WE ARE split, history timeline, `TeamSection`, hiring strip, help card |
 | Commercial / Residential landing | `recon/services/commercial-landscaping-services.md`, `.../residential-landscaping-services.md` | Page hero, their intro, the relevant service panels (reuse `.svc` pattern), matching case studies, FAQ slice (their commercial 15 / residential 9) |
-| 8 service pages | `recon/services/<slug>.md` (+ `recon/services/img/` for snow) | Page hero, copy sections, related case studies, FAQ slice, help card. Snow page: "Commercial and HOA properties" chip; never offer snow to homeowners. |
+| 8 service pages | `recon/services/<slug>.md` (+ `recon/services/img/` for snow) | Page hero, copy sections, related case studies, FAQ slice, help card. **Each commercial service page links to its residential version where one exists** (Installation & Design ↔ `/design`, Maintenance ↔ `/maintain`, Drainage ↔ `/drainage-solutions`), and back (decided). Snow page: "Commercial and HOA properties" chip; never offer snow to homeowners. |
 | Project Gallery | `recon/portfolio/` + manifest | Grid of photos with captions under the thin line (gallery card style); write short captions for the 12 untitled ones (Justin approved that approach) |
 | Case Studies (`/case-studies`) | `recon/case-studies.json` | List/grid of all 16 with county, type and price chips (the chip style from the slider); filter by Residential / Commercial / service |
 | Case study detail (`/portfolio-posts/<slug>`) | same JSON, one per slug | Title, chips, the story sections, photos (check pairing, §6), "Book now" + related cases |
@@ -357,7 +357,7 @@ After the move, the homepage must look and behave exactly as before: re-run the 
 | Careers (`/career-center`, `/join-our-team`) | **not captured**: fetch their page text once, save to `recon/careers.md` | Hiring strip style hero, roles list, benefits, English + Spanish application links |
 | West Chester / Phoenixville | **not captured**: fetch once, save to `recon/` | Page hero, local copy, service list, maybe a map (needs a CSP block in Portfolio, §3) |
 | Terms / SMS terms / Sitemap | fetch once | Plain readable text pages |
-| Privacy Policy | doesn't exist on their site | Ask Justin (placeholder or skip) |
+| Privacy Policy | doesn't exist on their site | **Decided:** a short, clearly labelled placeholder ("This is a demo; Bates Landscaping's privacy policy goes here"). Don't write legal text. |
 
 ---
 
@@ -415,21 +415,22 @@ After the move, the homepage must look and behave exactly as before: re-run the 
 
 ---
 
-## 11. Open questions (ask Justin; don't guess)
+## 11. Decisions on the former open questions (all answered 2026-09-25; don't re-ask)
 
-Answered already (don't re-ask): scale is fine; gallery captions fine; help card uses their text with "Book now" button +
-"Ask us →" link; compact visible FAQ; Aqua Brevo sender with Aqua in the email; logo SVG made; toast removed; off-site
-links in new tabs; deploy at justin94.space/bates with pages under it; interview sheet made; NALP ribbons in the hero;
-services built; team ordered by role.
+| # | Question | Decision |
+|---|---|---|
+| 1 | Which page first | Justin doesn't mind. Suggested: **About Us** first (mostly reuses built pieces, so it sets the inner-page pattern fast). |
+| 2 | Inner-page hero | **Confirmed** the compact forest band (§8.2). Inner pages must not copy the homepage video hero. |
+| 3 | Khyss / Juliana photos | Already his retouched versions. Final. |
+| 4 | Footer award badge | **Done:** the footer now shows the 2024 and 2025 ribbons (same `AwardRibbon` as the hero, 92px). The old badge image was deleted. |
+| 5 | Privacy policy | A short, clearly labelled placeholder page. No invented legal text. |
+| 6 | Homepage services link to commercial pages | Keep the homepage as is; each service page links to its residential counterpart and back. |
+| 7 | Reviews | None on the site. Justin asks Bates in the interview. Never fabricate. |
 
-Still open:
-1. Which page to build first, and whether to run the design skills for it.
-2. The inner-page hero pattern (§8.2): confirm or steer before the first page.
-3. Khyss and Juliana retouched headshots (Justin is doing them).
-4. Footer award badge shows 2024 only. Offered: swap it for small ribbons like the hero's so both years show.
-5. Privacy policy content (their site has none).
-6. Homepage service panels link to the **commercial** service pages (as their cards do). Also offer residential ones?
-7. Testimonials: Bates has none, so none (never fabricate). Ask whether they have Google reviews to link.
+Earlier answers (also settled): scale is fine; gallery captions fine; help card uses their text with a "Book now" button +
+"Ask us →" link; compact visible FAQ; Aqua Brevo sender with Aqua named in the email; logo SVG; no "demo" toast;
+off-site links open in a new tab; deploy at justin94.space/bates with pages under it; interview sheet; NALP ribbons in
+the hero; services section; team ordered by role; chat header without a subtitle.
 
 ---
 
@@ -463,8 +464,8 @@ if Justin wants it updated, add that to the "works well" box.
 2. `git switch main && git pull`, then `git switch -c claude/<topic>`.
 3. Start the server (§3); look at `http://localhost:3012/bates` and https://justin94.space/bates in Chrome so you know
    the language you're extending.
-4. Ask Justin, in chat, which page first and whether he's happy with the inner-page pattern (§8.2). Offer the design
-   skills. Wait for his answer.
+4. Offer Justin the design skills for the new pages and say which page you'll start with (§11.1). Nothing else needs
+   asking first; the inner-page pattern is confirmed (§8.2).
 5. Do the shell move (§8.1) and re-verify the homepage.
 6. Build the page with the existing tokens, components and rules; verify per §7 at 1440, 390 and 320; ship per §1;
    check it live at justin94.space/bates/<page>; append decisions to `NOTES.md` and update this file and `DESIGN.md`.
