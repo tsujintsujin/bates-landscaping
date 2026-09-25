@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  BookingDialog,
   CaseCarousel,
   ChatFab,
   ConsentPreferences,
@@ -464,6 +465,7 @@ export default function Home() {
       <ChatFab />
       <ConsentPreferences />
       <DemoNotice />
+      <BookingDialog />
     </>
   );
 }

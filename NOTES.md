@@ -309,3 +309,20 @@ Justin's mapping of Hooper sections → Bates:
 - Checked: 69 links on the page (desktop, mobile menu, chat); 58 internal clicked, none navigated, all showed the right
   notice; all 24 linked addresses + made-up deeper paths return 200; external links (Facebook, Instagram, LinkedIn,
   LMN portal, Trainual) load.
+
+## 2026-09-26: chatbot made functional (Justin: "have it working")
+- Hosting stays on Vercel; the AI runs on Cloudflare: a small Worker `bates-chat` with the Workers AI binding
+  (no Cloudflare API token needed). Justin told me to do the browser/account steps myself: I signed in to Cloudflare
+  via "Continue with GitHub" and authorized Wrangler in his Chrome.
+- The site's `/api/chat` route calls the Worker with a random shared key (Credentials/Bates/chat.env; Vercel env).
+- Chat window redesigned per Justin: looks like a chat from the start, small topic chips below the conversation,
+  a text box with send, then "Or call (484) 443-8772".
+- Quality fixes after testing real questions: "we" voice, direct yes/no, no invented prices (a price table from the
+  case studies; the model had mixed up the commercial bamboo price before it), off-topic answered in one line,
+  hours are "not published, call us".
+- Justin: the 8B answers were weak ("always suggests booking", missed that big trees aren't offered). Fixed: facts +
+  price table + only the matching FAQs per question, stronger rules, model upgraded to Llama 3.3 70B (all on
+  Cloudflare, not his machine). Then humanized per the /humanize skill ("we" voice, contractions, no stock AI phrases).
+- Typing: 2-4 s quiet, then a random rhythm (long burst; burst-pause-burst; long-pause-short; quick burst).
+- Notifications: Justin did NOT want a sound (removed). Unread count on the chat button + "(n)" in the tab title.
+- Booking: "Book now" opens a booking window with made-up availability (Justin: "make something up"); nothing sent.

@@ -1,7 +1,20 @@
 # HANDOFF: Bates Landscaping remodel
 
-Written 2026-09-25 at the end of the homepage sessions. **Final state (Justin, 2026-09-25): the demo is the homepage
-only, live at https://justin94.space/bates. No other pages will be built.** Every link to another page of the site shows
+Written 2026-09-25 at the end of the homepage sessions. **Final state (Justin, 2026-09-25/26): the demo is the homepage
+only, live at https://justin94.space/bates, with a working AI chat. No other pages will be built.**
+
+**Chat setup:** browser → `/bates/api/chat` (Vercel, same origin) → Cloudflare Worker `bates-chat`
+(https://bates-chat.justin-masiga-94.workers.dev, source `chat-worker/`, deployed with `npx wrangler deploy`; Wrangler is
+logged in as justin.masiga.94@gmail.com) → Workers AI, model **Llama 3.3 70B** (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`). The route and Worker share a random key: Worker secret `BATES_KEY`,
+Vercel env `BATES_CHAT_URL` / `BATES_CHAT_KEY` (production, preview, development), copy in
+`D:\AIO Freelance\Credentials\Bates\chat.env`, local copy in `site/.env.local` (gitignored). The bot's instructions are
+in the route (short, human-sounding answers per the /humanize rules, "we" voice, prices only from the price table, snow
+only for commercial/HOA, Spanish replies). Knowledge is `site/lib/knowledge.ts` (FACTS + PRICES in every request; the route
+picks the ~6 FAQs that match the question by keyword). The chat window replies like a person: 2-4 s quiet, then a random
+typing rhythm; unread replies show as a count on the chat button and "(n)" in the tab title (no sound). "Book now"
+anywhere opens a booking window with made-up availability (next 10 weekdays, 30-min slots, ~35% "taken"); submitting
+shows a confirmation and states that nothing was sent. Free Workers AI allowance ~10,000 neurons/day
+(roughly 250-300 questions); past that it answers with the phone-number fallback until midnight UTC. Every link to another page of the site shows
 a short "not part of the demo" / "Booking isn't available in this demo" notice instead of navigating (`DemoNotice` in
 `components/client.tsx`), and any other address under `/bates` renders a "This page isn't part of the demo" page
 (`app/[...slug]/page.tsx`) instead of a 404. §8 (building other pages) is kept only as reference in case that changes. Read this top to bottom
@@ -27,7 +40,7 @@ Read in this order:
 | Design system | Settled; documented in `DESIGN.md`. Reuse it on every page. |
 | Other pages | **Not being built** (Justin's final decision). Internal links show a demo notice; every other `/bates/...` address shows a "not part of the demo" page. Checked: 58 internal links clicked, none navigates; all 24 linked addresses (and made-up deeper ones) return 200. |
 | Shared shell | Header, footer, chat and consent still live inside `page.tsx`. **Move them to the layout first** (§8.1). |
-| Chat | UI built, canned answers from their FAQs. **No AI backend yet** (§10.2). |
+| Chat | **Working.** Typed questions go to `site/app/api/chat/route.ts`, which calls the Cloudflare Worker `bates-chat` (`chat-worker/`, Workers AI, Llama 3.3 70B) with all 55 FAQs, company facts, team and a past-project price table (`site/lib/knowledge.ts`). Topic chips still answer instantly. |
 | Booking | Not built (§10.1). `/book-now?service=<key>` is already linked from the chat. |
 | Consent Preferences | Built (bottom-left button + dialog, choice kept in `localStorage`). |
 | Git | Private repo `tsujintsujin/bates-landscaping`, `main` default. PRs #1-#6 merged. |
@@ -453,7 +466,7 @@ After the move, the homepage must look and behave exactly as before: re-run the 
   photos" step, which never shows an address). Pre-select from `?service=drainage|bamboo|hardscaping|maintenance|snow|other`.
 - Forms: label above input, error text below, no placeholder-as-label, WCAG AA contrast.
 
-### 10.2 Chatbot backend
+### 10.2 Chatbot backend (**built 2026-09-26**; kept for reference)
 - **Cloudflare Workers AI** (decided direction; not Ollama: always on, no PC or tunnel), e.g.
   `@cf/meta/llama-3.1-8b-instruct-fp8-fast`, called from a server route (the site itself is on Vercel). Put all 55 FAQs
   and the key facts (§5) in the system prompt; no vector DB.

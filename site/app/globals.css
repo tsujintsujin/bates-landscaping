@@ -33,6 +33,10 @@ body {
   outline: 2px solid var(--color-red);
   outline-offset: 3px;
 }
+/* The chat input draws its own red focus ring */
+#chat-input:focus-visible {
+  outline: none;
+}
 h1,
 h2,
 h3 {
@@ -89,6 +93,23 @@ h3 {
   to {
     transform: translateX(-50%);
   }
+}
+
+/* Chat "typing" dots: a soft pulse, staggered per dot */
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+.typing-dot {
+  animation: typing 1.1s ease-in-out infinite;
 }
 
 @keyframes pop {
@@ -163,7 +184,8 @@ h3 {
 
 @media (prefers-reduced-motion: reduce) {
   .floating,
-  .rise {
+  .rise,
+  .typing-dot {
     animation: none;
   }
   .svc,
