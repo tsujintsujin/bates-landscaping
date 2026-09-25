@@ -193,7 +193,8 @@ Case-study tags: 11px uppercase semibold, 3px radius, cycling white / red / pape
   Round red arrows over the neighbours; swipe on touch (a flick > 0.11 px/ms or a 50px drag); arrow keys when focused.
 - **Award ribbons** (hero, `AwardRibbon` in page.tsx): two notched ribbon SVGs above the headline, 2024 `#1c5a3a` and
   2025 `#2f8a45` (NALP's greens, used only here), white text (NALP / year in Bricolage / AWARDS OF / EXCELLENCE /
-  RECIPIENT), faint inner border, soft drop shadow; 106px tall on phones, 130px desktop. No NALP logo mark.
+  RECIPIENT), faint inner border, soft drop shadow; 106px tall on phones, 130px desktop. No NALP logo mark. The same
+  component (`size="h-[92px]"`) shows both years in the footer.
 - **Floating CTA card** ("We're here to help!"): red gradient card with contour line art, 12px vertical bob (3.2s,
   CSS). White "Book now" button + "Ask us →" text link that opens the chat.
 - **Service panels** (`.svc-row` / `.svc` in globals.css, pure CSS): five full-height photo panels in a row from `lg`;
